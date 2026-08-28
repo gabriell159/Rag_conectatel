@@ -2,3 +2,6 @@
 .venv/
 __pycache__/
 .idea
+data/processed/chunks.jsonl
+data/processed/index.npz
+data/processed/audit_log.jsonl
