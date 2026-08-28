@@ -34,6 +34,11 @@ def load_config() -> tuple[str, str, str]:
         raise RuntimeError(
             f"Configuracao incompleta: preencha {', '.join(missing)} no arquivo .env."
         )
+    if prefix != "conectatel":
+        raise RuntimeError(
+            f"S3_PREFIX invalido: '{prefix}'. "
+            "A IAM atual permite somente o prefixo 'conectatel'."
+        )
     return bucket, region, prefix
 
 
@@ -59,45 +64,14 @@ def collect_files() -> list[tuple[Path, str]]:
     return files
 
 
-def ensure_bucket_exists(client, bucket: str, region: str) -> None:
-    try:
-        client.head_bucket(Bucket=bucket)
-        print(f"Bucket ja existente: s3://{bucket}/")
-        return
-    except ClientError as exc:
-        error_code = str(exc.response.get("Error", {}).get("Code", ""))
-        if error_code not in {"404", "NoSuchBucket"}:
-            raise RuntimeError(
-                f"Nao foi possivel validar o bucket '{bucket}'. "
-                "Verifique as credenciais e a permissao s3:HeadBucket."
-            ) from exc
-
-    try:
-        params = {"Bucket": bucket}
-        if region != "us-east-1":
-            params["CreateBucketConfiguration"] = {"LocationConstraint": region}
-        client.create_bucket(**params)
-        print(f"Bucket criado: s3://{bucket}/ ({region})")
-    except ClientError as exc:
-        error_code = str(exc.response.get("Error", {}).get("Code", ""))
-        if error_code in {"BucketAlreadyExists", "BucketAlreadyOwnedByYou"}:
-            raise RuntimeError(
-                f"O bucket '{bucket}' ja existe, mas nao esta acessivel nesta conta."
-            ) from exc
-        raise RuntimeError(
-            f"Nao foi possivel criar o bucket '{bucket}'. "
-            "Verifique a regiao e a permissao s3:CreateBucket."
-        ) from exc
-
-
 def upload_configurado() -> dict[str, int]:
     bucket, region, prefix = load_config()
     files = collect_files()
     client = boto3.client("s3", region_name=region)
-    ensure_bucket_exists(client, bucket, region)
     summary = {"sucesso": 0, "falha": 0}
 
     print(f"Iniciando upload de {len(files)} arquivo(s) para s3://{bucket}/{prefix}/")
+    print("O bucket deve existir previamente e ser provisionado pela administracao AWS.")
     for local_path, relative_key in files:
         key = f"{prefix}/{relative_key}"
         try:
@@ -106,9 +80,21 @@ def upload_configurado() -> dict[str, int]:
             print(f"OK   {local_path} -> s3://{bucket}/{key}")
         except Exception as exc:
             summary["falha"] += 1
+            if isinstance(exc, ClientError):
+                code = str(exc.response.get("Error", {}).get("Code", ""))
+                if code in {"NoSuchBucket", "404", "400", "BadRequest"}:
+                    detail = "bucket inexistente, regiao incorreta ou endpoint inacessivel"
+                elif code in {"AccessDenied", "403"}:
+                    detail = "sem permissao s3:PutObject para este prefixo"
+                elif code == "ExpiredToken":
+                    detail = "credenciais temporarias expiradas"
+                else:
+                    detail = code or "erro retornado pelo S3"
+                message = f"{detail} ({code})"
+            else:
+                message = f"{type(exc).__name__}: {exc}"
             print(
-                f"ERRO {local_path} -> s3://{bucket}/{key}: "
-                f"{type(exc).__name__}: {exc}"
+                f"ERRO {local_path} -> s3://{bucket}/{key}: {message}"
             )
 
     print(

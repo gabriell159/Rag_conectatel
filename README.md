@@ -217,10 +217,10 @@ s3://<S3_BUCKET_NAME>/<S3_PREFIX>/processed/log_chamados/
 ```
 
 O upload valida `S3_BUCKET_NAME`, `AWS_REGION`, `S3_PREFIX` e as pastas locais
-antes de iniciar. Se o bucket nao existir e a credencial tiver permissao
-`s3:CreateBucket`, ele sera criado automaticamente na regiao informada. Ao
-final, informa quantos arquivos foram enviados e lista individualmente qualquer
-falha.
+antes de iniciar. O bucket precisa existir previamente e ser provisionado pela
+administracao AWS; o pipeline operacional nao executa `HeadBucket` nem
+`CreateBucket`. Ao final, informa quantos arquivos foram enviados e lista
+individualmente qualquer falha.
 
 ### 5. Executar o fluxo completo da Frente 1
 
@@ -336,6 +336,6 @@ python src/01_pipeline_tratamento/04_upload_s3.py
 - A solucao final de RAG ainda nao foi implementada pela squad.
 - A triagem e o escalonamento ainda nao foram integrados.
 - A auditoria final com `trace_id` ainda nao foi implementada.
-- O bucket e os prefixos agora dependem do `.env` preenchido.
+- O bucket e os prefixos dependem do `.env` preenchido; o bucket deve existir previamente.
 - O notebook de tratamento e opcional; o script Python e o ponto principal de execucao.
 - Os scripts dependem das bibliotecas listadas em `requirements.txt`.
