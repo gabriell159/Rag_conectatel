@@ -1,0 +1,704 @@
+[
+  {
+    "content": "# FAQ Cobertura e Rede — ConectaTel\n\n**Como verifico se minha região tem cobertura 4G/5G?**\nPelo aplicativo ConectaTel, na seção \"Cobertura\", inserindo o CEP da região desejada.\n\n**O que fazer quando o sinal está instável?**\nReiniciar o aparelho, verificar se o modo avião foi ativado e desativado, e confirmar se a região não está em manutenção programada (informação disponível na seção \"Cobertura\" do aplicativo). Se o problema persistir por mais de 24 horas, abrir um chamado técnico.\n\n**Por que minha internet está lenta mesmo dentro da franquia?**\nLentidão pode ocorrer por congestionamento de rede em horários de pico, distância de antenas ou limitações do aparelho. Recomenda-se testar a velocidade pelo aplicativo ConectaTel em diferentes horários antes de abrir um chamado técnico.\n\n**A ConectaTel oferece internet fixa residencial?**\nSim, em regiões específicas onde há infraestrutura de fibra instalada. A disponibilidade pode ser verificada pelo aplicativo ou central de atendimento",
+    "metadata": {
+      "doc_family_id": "faq-cobertura-rede",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "faq_cobertura_rede.md",
+      "category": "faq",
+      "chunk_id": "faq-cobertura-rede-v1-chunk-001"
+    }
+  },
+  {
+    "content": "Sim, em regiões específicas onde há infraestrutura de fibra instalada. A disponibilidade pode ser verificada pelo aplicativo ou central de atendimento informando o endereço completo.\n\n**O que é a rede 5G da ConectaTel e onde está disponível?**\nA rede 5G está em expansão gradual e, no momento, cobre bairros centrais das principais capitais atendidas pela ConectaTel. A lista de bairros com cobertura 5G é atualizada mensalmente na seção \"Cobertura\" do aplicativo.\n\n**Quedas de sinal frequentes podem justificar cancelamento sem multa?**\nSim, desde que haja histórico de pelo menos 3 chamados técnicos abertos para o mesmo problema em 60 dias, sem solução — conforme critério da Política de Cancelamento vigente.",
+    "metadata": {
+      "doc_family_id": "faq-cobertura-rede",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "faq_cobertura_rede.md",
+      "category": "faq",
+      "chunk_id": "faq-cobertura-rede-v1-chunk-002"
+    }
+  },
+  {
+    "content": "# FAQ Geral — ConectaTel\n\n**Como consulto meu consumo de dados?**\nPelo aplicativo ConectaTel, na tela inicial, ou enviando \"CONSUMO\" por SMS para 1234 (sem custo).\n\n**Como emito a segunda via da minha fatura?**\nPelo aplicativo ConectaTel, na seção \"Faturas\", ou solicitando ao atendimento por chat, telefone ou loja física.\n\n**Quais são as formas de pagamento aceitas?**\nDébito automático em conta corrente, boleto bancário e cartão de crédito das principais bandeiras.\n\n**Como altero meus dados cadastrais (endereço, e-mail, telefone de contato)?**\nPelo aplicativo ConectaTel, na seção \"Meus Dados\", mediante confirmação de identidade com CPF e código de verificação enviado por SMS.\n\n**Existe aplicativo para gerenciar minha linha?**\nSim, o aplicativo ConectaTel está disponível para Android e iOS e permite consultar consumo, fatura, solicitar pacotes adicionais e abrir chamados.\n\n**Como funciona o débito automático?**\nO valor da fatura é debitado automaticamente na conta corrente cadastrada,",
+    "metadata": {
+      "doc_family_id": "faq-geral",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "faq_geral.md",
+      "category": "faq",
+      "chunk_id": "faq-geral-v1-chunk-001"
+    }
+  },
+  {
+    "content": "adicionais e abrir chamados.\n\n**Como funciona o débito automático?**\nO valor da fatura é debitado automaticamente na conta corrente cadastrada, sempre no mesmo dia definido na ativação do serviço. O cliente pode cancelar o débito automático a qualquer momento pelo aplicativo.\n\n**Onde encontro os canais de atendimento?**\nChat pelo aplicativo ConectaTel, central telefônica (0800 disponível 24h para suporte técnico e em horário comercial para demais assuntos) e lojas físicas em capitais e regiões metropolitanas atendidas.",
+    "metadata": {
+      "doc_family_id": "faq-geral",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "faq_geral.md",
+      "category": "faq",
+      "chunk_id": "faq-geral-v1-chunk-002"
+    }
+  },
+  {
+    "content": "# Plano Conecta Básico\n\nO Conecta Básico é o plano de entrada da ConectaTel, voltado para clientes com uso moderado de dados e foco em ligações e mensagens.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-basico",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_basico.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-basico-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Franquia mensal\n\n- 8 GB de internet móvel em alta velocidade (4G/5G, conforme disponibilidade na região).\n- Ligações ilimitadas para números ConectaTel.\n- 100 minutos para ligações a outras operadoras (fixo e móvel).\n- SMS ilimitado para números ConectaTel.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-basico",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_basico.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-basico-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Após o consumo da franquia de dados\n\nA velocidade de internet é reduzida para 128 kbps até o fim do ciclo de faturamento. O cliente pode contratar pacotes de dados adicionais a qualquer momento pelo aplicativo ConectaTel ou pela central de atendimento.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-basico",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_basico.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-basico-v1-chunk-003"
+    }
+  },
+  {
+    "content": "## Valor mensal\n\nR$ 49,90 por mês, com débito automático ou boleto. Não há fidelidade obrigatória para este plano.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-basico",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_basico.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-basico-v1-chunk-004"
+    }
+  },
+  {
+    "content": "## Benefícios inclusos\n\n- Acesso ao aplicativo ConectaTel para consulta de consumo e fatura.\n- Bônus de 2 GB adicionais nos primeiros três meses após a ativação (promocional, não cumulativo com outras promoções vigentes).",
+    "metadata": {
+      "doc_family_id": "plano-conecta-basico",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_basico.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-basico-v1-chunk-005"
+    }
+  },
+  {
+    "content": "## Migração de plano\n\nO cliente pode solicitar migração para o Conecta Plus ou Conecta Família a qualquer momento, sem custo de adesão, respeitando a data de corte do ciclo de faturamento vigente.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-basico",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_basico.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-basico-v1-chunk-006"
+    }
+  },
+  {
+    "content": "# Plano Conecta Família\n\nO Conecta Família permite agrupar até 5 linhas em uma única fatura, com franquia de dados compartilhada entre os membros.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-familia",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_familia.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-familia-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Franquia mensal\n\n- 60 GB de internet móvel compartilhados entre todas as linhas do grupo (mínimo de 2, máximo de 5 linhas).\n- Ligações e SMS ilimitados entre as linhas do grupo e para qualquer operadora dentro do território nacional.\n- Cada linha adicional ao plano principal soma 10 GB à franquia compartilhada, até o limite de 5 linhas.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-familia",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_familia.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-familia-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Distribuição da franquia\n\nO titular do plano pode definir, pelo aplicativo ConectaTel, um limite individual de consumo por linha dentro da franquia compartilhada. Por padrão, a franquia é de uso livre entre as linhas.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-familia",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_familia.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-familia-v1-chunk-003"
+    }
+  },
+  {
+    "content": "## Valor mensal\n\nR$ 129,90 para o plano com 2 linhas, mais R$ 25,00 por linha adicional (até 5 linhas no total). Fidelidade de 12 meses.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-familia",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_familia.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-familia-v1-chunk-004"
+    }
+  },
+  {
+    "content": "## Benefícios inclusos\n\n- Acesso ao aplicativo ConectaTel com painel de consumo por linha, visível ao titular.\n- Controle parental disponível para linhas cadastradas como dependentes.\n- Bloqueio remoto de linha pelo titular em caso de perda ou roubo de aparelho.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-familia",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_familia.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-familia-v1-chunk-005"
+    }
+  },
+  {
+    "content": "## Alterações no grupo familiar\n\nA inclusão ou remoção de linhas do grupo deve ser feita pelo titular do plano, mediante confirmação de identidade. A remoção de uma linha antes do fim do período de fidelidade individual dessa linha segue a Política de Cancelamento vigente.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-familia",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_familia.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-familia-v1-chunk-006"
+    }
+  },
+  {
+    "content": "# Plano Conecta Plus\n\nO Conecta Plus é voltado para clientes com uso intenso de internet móvel, incluindo streaming de vídeo e uso de redes sociais.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-plus",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_plus.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-plus-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Franquia mensal\n\n- 30 GB de internet móvel em alta velocidade (4G/5G, conforme disponibilidade na região).\n- Ligações e SMS ilimitados para qualquer operadora dentro do território nacional.\n- 15 GB adicionais exclusivos para uso em aplicativos de streaming de música parceiros da ConectaTel.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-plus",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_plus.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-plus-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Após o consumo da franquia de dados\n\nA velocidade de internet é reduzida para 256 kbps até o fim do ciclo de faturamento, com a opção de contratar pacotes adicionais de dados pelo aplicativo ou central de atendimento.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-plus",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_plus.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-plus-v1-chunk-003"
+    }
+  },
+  {
+    "content": "## Valor mensal\n\nR$ 79,90 por mês. Fidelidade de 12 meses para clientes que ativarem o plano com aparelho subsidiado pela ConectaTel; sem fidelidade para ativação apenas de chip/eSIM.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-plus",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_plus.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-plus-v1-chunk-004"
+    }
+  },
+  {
+    "content": "## Benefícios inclusos\n\n- Acesso ao aplicativo ConectaTel para consulta de consumo e fatura.\n- Roteador Wi-Fi de bolso com desconto de 50% na compra, mediante permanência mínima de 6 meses.\n- Prioridade na fila de atendimento humano em caso de escalonamento.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-plus",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_plus.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-plus-v1-chunk-005"
+    }
+  },
+  {
+    "content": "## Migração de plano\n\nMigração para o Conecta Básico ou Conecta Família pode ser solicitada a qualquer momento. Caso o cliente esteja em período de fidelidade vinculado a aparelho subsidiado, a migração está sujeita às regras da Política de Cancelamento vigente.",
+    "metadata": {
+      "doc_family_id": "plano-conecta-plus",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "plano_conecta_plus.md",
+      "category": "planos",
+      "chunk_id": "plano-conecta-plus-v1-chunk-006"
+    }
+  },
+  {
+    "content": "# Política de Cancelamento de Linha e Plano\n\n## Cancelamento sem período de fidelidade\n\nO cliente pode solicitar o cancelamento a qualquer momento, sem multa, quando não houver fidelidade ativa associada à linha ou ao plano.",
+    "metadata": {
+      "doc_family_id": "pol-cancelamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_cancelamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-cancelamento-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Cancelamento durante o período de fidelidade\n\nPlanos ativados com aparelho subsidiado ou com benefício promocional vinculado a permanência mínima possuem fidelidade de 12 meses. O cancelamento antes do fim desse período gera multa proporcional aos meses restantes, calculada como:\n\n`multa = (valor do benefício concedido / 12) × meses restantes de fidelidade`",
+    "metadata": {
+      "doc_family_id": "pol-cancelamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_cancelamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-cancelamento-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Casos que dispensam multa de fidelidade\n\n- Comprovação de óbito do titular, mediante certidão.\n- Comprovação de mudança para região sem cobertura ConectaTel.\n- Defeito recorrente no serviço, com histórico de pelo menos 3 chamados técnicos abertos para o mesmo problema em 60 dias, sem solução.",
+    "metadata": {
+      "doc_family_id": "pol-cancelamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_cancelamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-cancelamento-v1-chunk-003"
+    }
+  },
+  {
+    "content": "## Processo de cancelamento\n\n1. Confirmar identidade do titular da linha.\n2. Informar ao cliente o valor de eventual multa de fidelidade, se aplicável.\n3. Registrar o motivo do cancelamento.\n4. Encerrar a linha em até 2 dias úteis após a confirmação do cliente.",
+    "metadata": {
+      "doc_family_id": "pol-cancelamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_cancelamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-cancelamento-v1-chunk-004"
+    }
+  },
+  {
+    "content": "## Contestação da multa\n\nCaso o cliente conteste o valor da multa de fidelidade, o caso deve ser encaminhado ao atendimento humano — este tipo de contestação não deve ser resolvido apenas pelo assistente virtual (ver Política de Suporte e Escalonamento).",
+    "metadata": {
+      "doc_family_id": "pol-cancelamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_cancelamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-cancelamento-v1-chunk-005"
+    }
+  },
+  {
+    "content": "# Política de Reembolso e Contestação de Fatura (versão 1)\n\n**Esta versão está revogada e não deve ser usada como fonte de resposta a partir de 01/04/2026.**",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 1,
+      "effective_from": "2025-01-10",
+      "effective_to": "2026-03-31",
+      "status": "revogado",
+      "source": "politica_reembolso_v1.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Prazo para contestação\n\nO cliente pode contestar valores cobrados na fatura em até **30 dias corridos** contados a partir da data de vencimento. Contestações recebidas após esse prazo não são analisadas.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 1,
+      "effective_from": "2025-01-10",
+      "effective_to": "2026-03-31",
+      "status": "revogado",
+      "source": "politica_reembolso_v1.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Forma de reembolso\n\nQuando a contestação é aceita, o valor é devolvido exclusivamente como **crédito na fatura seguinte**. Não há devolução em conta corrente ou outro meio de pagamento.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 1,
+      "effective_from": "2025-01-10",
+      "effective_to": "2026-03-31",
+      "status": "revogado",
+      "source": "politica_reembolso_v1.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v1-chunk-003"
+    }
+  },
+  {
+    "content": "## Análise da contestação\n\nA análise é feita em até 10 dias úteis pela equipe de faturamento. Não há etapa de verificação antifraude formal para contestações de qualquer valor.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 1,
+      "effective_from": "2025-01-10",
+      "effective_to": "2026-03-31",
+      "status": "revogado",
+      "source": "politica_reembolso_v1.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v1-chunk-004"
+    }
+  },
+  {
+    "content": "## Registro\n\nO atendente deve registrar a contestação no sistema interno, informando valor contestado e motivo alegado pelo cliente.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 1,
+      "effective_from": "2025-01-10",
+      "effective_to": "2026-03-31",
+      "status": "revogado",
+      "source": "politica_reembolso_v1.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v1-chunk-005"
+    }
+  },
+  {
+    "content": "# Política de Reembolso e Contestação de Fatura (versão 2)\n\nEsta é a versão vigente da política, em vigor desde 01/04/2026. Substitui integralmente a versão anterior da mesma família de documento.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 2,
+      "effective_from": "2026-04-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_reembolso_v2.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v2-chunk-001"
+    }
+  },
+  {
+    "content": "## Prazo para contestação\n\nO cliente pode contestar valores cobrados na fatura em até **90 dias corridos** contados a partir da data de vencimento.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 2,
+      "effective_from": "2026-04-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_reembolso_v2.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v2-chunk-002"
+    }
+  },
+  {
+    "content": "## Forma de reembolso\n\nQuando a contestação é aceita, o cliente pode escolher entre:\n\n- crédito na fatura seguinte; ou\n- depósito em conta corrente de titularidade do próprio cliente, mediante confirmação de dados bancários.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 2,
+      "effective_from": "2026-04-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_reembolso_v2.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v2-chunk-003"
+    }
+  },
+  {
+    "content": "## Verificação antifraude\n\nContestações de valor igual ou superior a **R$ 500,00** passam obrigatoriamente por verificação antifraude antes da liberação do reembolso. Esse tipo de caso não deve ser resolvido apenas pelo atendimento automatizado — ver critérios de escalonamento na Política de Suporte e Escalonamento.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 2,
+      "effective_from": "2026-04-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_reembolso_v2.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v2-chunk-004"
+    }
+  },
+  {
+    "content": "## Análise da contestação\n\nA análise é feita em até 7 dias úteis pela equipe de faturamento, exceto quando há verificação antifraude em curso, caso em que o prazo pode se estender por mais 5 dias úteis.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 2,
+      "effective_from": "2026-04-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_reembolso_v2.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v2-chunk-005"
+    }
+  },
+  {
+    "content": "## Registro\n\nO atendente (humano ou assistente virtual) deve registrar a contestação, informando valor contestado, motivo alegado pelo cliente e se houve acionamento da verificação antifraude.",
+    "metadata": {
+      "doc_family_id": "politica-reembolso",
+      "version_ordinal": 2,
+      "effective_from": "2026-04-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_reembolso_v2.md",
+      "category": "politicas",
+      "chunk_id": "politica-reembolso-v2-chunk-006"
+    }
+  },
+  {
+    "content": "# Política de Suporte e Escalonamento\n\nEsta política define quais situações o assistente virtual (Concierge ConectaTel) **não deve tentar resolver sozinho** e os campos mínimos que qualquer registro de escalonamento precisa conter para permitir a continuidade do atendimento por um humano.",
+    "metadata": {
+      "doc_family_id": "pol-suporte-escalonamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_suporte_escalonamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-suporte-escalonamento-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Casos de escalonamento obrigatório\n\nO assistente deve encaminhar o atendimento a um humano, sem tentar concluir a solução sozinho, quando o caso se enquadrar em qualquer uma das situações abaixo:\n\n1. **Suspeita de fraude** — uso indevido de linha, conta ou dados do cliente, ou tentativa de golpe relatada pelo cliente.\n2. **Contestação de valor de fatura igual ou superior a R$ 500,00** — conforme regra de verificação antifraude da Política de Reembolso e Contestação de Fatura vigente.\n3. **Contestação de multa de fidelidade** em processo de cancelamento.\n4. **Titularidade da linha em caso de falecimento do titular** ou qualquer alteração de titularidade que exija documentação adicional.\n5. **Reclamação já registrada em órgão externo** (ex.: Anatel, Procon) ou menção a possível ação judicial contra a ConectaTel.\n6. **Relato de assédio, discriminação ou conduta abusiva** por parte de atendente, técnico ou terceiro.\n7. **Problema técnico que exige visita presencial** de um técnico",
+    "metadata": {
+      "doc_family_id": "pol-suporte-escalonamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_suporte_escalonamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-suporte-escalonamento-v1-chunk-002"
+    }
+  },
+  {
+    "content": "discriminação ou conduta abusiva** por parte de atendente, técnico ou terceiro.\n7. **Problema técnico que exige visita presencial** de um técnico (instalação de internet fixa, reparo de infraestrutura de rede).\n8. **Pergunta sem fonte suficiente na base de conhecimento vigente** — quando o assistente não encontra informação para responder com segurança, ele deve reconhecer a limitação (\"não sei\") e, se o cliente insistir ou o tema parecer sensível, oferecer o encaminhamento a um humano em vez de inferir uma resposta.\n\nFora dessas situações, o assistente deve tentar resolver o atendimento diretamente com base no corpus documental vigente.",
+    "metadata": {
+      "doc_family_id": "pol-suporte-escalonamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_suporte_escalonamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-suporte-escalonamento-v1-chunk-003"
+    }
+  },
+  {
+    "content": "## Campos mínimos do registro de escalonamento\n\nTodo escalonamento gerado pelo assistente deve conter, no mínimo, os seguintes campos, de forma que o atendente humano consiga continuar o atendimento sem pedir ao cliente para repetir informações já fornecidas:\n\n| Campo | Descrição |\n|---|---|\n| `protocolo_atendimento` | Identificador único do atendimento (gerado automaticamente). |\n| `data_hora_abertura` | Data e hora em que o escalonamento foi criado. |\n| `canal_origem` | Canal em que o atendimento começou (chat, telefone, app, loja). |\n| `categoria_motivo` | Qual dos 8 critérios de escalonamento acima foi acionado. |\n| `resumo_caso` | Resumo objetivo do que o cliente relatou, em linguagem natural. |\n| `historico_ja_levantado` | O que o assistente já perguntou e confirmou com o cliente antes de escalonar (para evitar repetição). |\n| `produto_servico_envolvido` | Plano, linha ou serviço relacionado ao caso. |\n| `documento_fonte_consultado` | Documento do corpus consultado pelo",
+    "metadata": {
+      "doc_family_id": "pol-suporte-escalonamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_suporte_escalonamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-suporte-escalonamento-v1-chunk-004"
+    }
+  },
+  {
+    "content": "|\n| `produto_servico_envolvido` | Plano, linha ou serviço relacionado ao caso. |\n| `documento_fonte_consultado` | Documento do corpus consultado pelo assistente, mesmo quando insuficiente para responder. |\n| `urgencia` | Classificação de urgência (baixa, média, alta), conforme o critério acionado. |\n| `dados_contato_retorno` | Meio de contato preferido do cliente para retorno do atendimento humano. |",
+    "metadata": {
+      "doc_family_id": "pol-suporte-escalonamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_suporte_escalonamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-suporte-escalonamento-v1-chunk-005"
+    }
+  },
+  {
+    "content": "## Critério de qualidade do handoff\n\nUm escalonamento é considerado bem-sucedido quando o atendente humano, ao abrir o registro, consegue dar continuidade ao atendimento **sem pedir ao cliente para repetir** nenhuma informação que já havia sido fornecida ao assistente virtual.",
+    "metadata": {
+      "doc_family_id": "pol-suporte-escalonamento",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "politica_suporte_escalonamento.md",
+      "category": "politicas",
+      "chunk_id": "pol-suporte-escalonamento-v1-chunk-006"
+    }
+  },
+  {
+    "content": "# Procedimento — Desbloqueio de Aparelho\n\n## Quando se aplica\n\nAparelhos vendidos pela ConectaTel com subsídio (desconto vinculado a fidelidade) são bloqueados para uso exclusivo com chip ConectaTel até o fim do período de fidelidade ou quitação antecipada.",
+    "metadata": {
+      "doc_family_id": "proc-desbloqueio-aparelho",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_desbloqueio_aparelho.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-desbloqueio-aparelho-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Passo a passo\n\n1. Confirmar identidade do titular da linha associada ao aparelho.\n2. Verificar no sistema se o período de fidelidade do aparelho já foi concluído ou se há quitação antecipada disponível.\n3. Caso o período tenha sido concluído, gerar o código de desbloqueio pelo aplicativo ConectaTel em até 1 dia útil, sem custo.\n4. Caso o cliente deseje quitar antecipadamente para desbloquear o aparelho antes do fim da fidelidade, calcular o valor residual conforme a fórmula de multa proporcional da Política de Cancelamento vigente e informar ao cliente antes de prosseguir.\n5. Orientar o cliente sobre como inserir o código de desbloqueio no aparelho.",
+    "metadata": {
+      "doc_family_id": "proc-desbloqueio-aparelho",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_desbloqueio_aparelho.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-desbloqueio-aparelho-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Observações\n\n- O desbloqueio não afeta o plano ou a linha do cliente — apenas remove a restrição de uso exclusivo com chip ConectaTel.\n- Solicitações de desbloqueio de aparelhos comprados fora da ConectaTel (sem subsídio) não se aplicam a este procedimento; nesse caso, orientar o cliente a verificar o bloqueio diretamente com o fabricante do aparelho.",
+    "metadata": {
+      "doc_family_id": "proc-desbloqueio-aparelho",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_desbloqueio_aparelho.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-desbloqueio-aparelho-v1-chunk-003"
+    }
+  },
+  {
+    "content": "# Procedimento — Portabilidade Numérica\n\n## Portabilidade de entrada (número vindo de outra operadora para a ConectaTel)\n\n1. Confirmar com o cliente o número a ser portado e o plano ConectaTel desejado.\n2. Solicitar ao cliente os dados da linha na operadora de origem (nome do titular, CPF, número da linha).\n3. Registrar o pedido de portabilidade pelo sistema interno; o prazo padrão de conclusão é de até 3 dias úteis, conforme regulamentação do setor.\n4. Orientar o cliente a manter o chip da operadora de origem ativo até receber a confirmação de portabilidade concluída.\n5. Após a confirmação, o número passa a operar normalmente no chip ou eSIM ConectaTel.",
+    "metadata": {
+      "doc_family_id": "proc-portabilidade",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_portabilidade.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-portabilidade-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Portabilidade de saída (número ConectaTel migrando para outra operadora)\n\n1. Nenhuma ação é necessária por parte da ConectaTel além de confirmar a solicitação, caso o cliente pergunte.\n2. O pedido de portabilidade de saída é iniciado pela operadora de destino.\n3. Caso o cliente esteja em período de fidelidade, a portabilidade de saída não impede a cobrança de eventual multa, que segue a Política de Cancelamento vigente.",
+    "metadata": {
+      "doc_family_id": "proc-portabilidade",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_portabilidade.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-portabilidade-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Casos que exigem escalonamento\n\n- Portabilidade que ultrapassar o prazo padrão de 3 dias úteis sem conclusão.\n- Divergência de dados cadastrais entre operadoras que impeça a conclusão automática do processo.\n\nNesses casos, seguir a Política de Suporte e Escalonamento vigente.",
+    "metadata": {
+      "doc_family_id": "proc-portabilidade",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_portabilidade.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-portabilidade-v1-chunk-003"
+    }
+  },
+  {
+    "content": "# Procedimento — Troca de Chip Físico ou Ativação de eSIM\n\n## Quando se aplica\n\nPerda, dano ou troca de aparelho que exija novo chip físico, ou solicitação de ativação de eSIM em aparelho compatível.",
+    "metadata": {
+      "doc_family_id": "proc-troca-chip-esim",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_troca_chip_esim.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-troca-chip-esim-v1-chunk-001"
+    }
+  },
+  {
+    "content": "## Passo a passo — chip físico\n\n1. Confirmar identidade do titular da linha (CPF e código enviado por SMS a um número de contato alternativo, ou presencialmente em loja com documento oficial).\n2. Gerar o pedido de novo chip pelo aplicativo ConectaTel (entrega em até 5 dias úteis no endereço cadastrado) ou retirar diretamente em loja física.\n3. Orientar o cliente a aguardar a mensagem de confirmação de portabilidade interna do número para o novo chip antes de descartar o chip antigo.\n4. O chip antigo é desativado automaticamente em até 24 horas após a ativação do novo chip.",
+    "metadata": {
+      "doc_family_id": "proc-troca-chip-esim",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_troca_chip_esim.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-troca-chip-esim-v1-chunk-002"
+    }
+  },
+  {
+    "content": "## Passo a passo — eSIM\n\n1. Confirmar identidade do titular da linha.\n2. Verificar compatibilidade do aparelho com eSIM na lista de aparelhos homologados, disponível no aplicativo ConectaTel.\n3. Gerar o código QR de ativação pelo aplicativo (válido por 24 horas).\n4. Orientar o cliente a escanear o QR Code nas configurações de rede móvel do aparelho.\n5. Confirmar a ativação da linha no aplicativo antes de encerrar o atendimento.",
+    "metadata": {
+      "doc_family_id": "proc-troca-chip-esim",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_troca_chip_esim.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-troca-chip-esim-v1-chunk-003"
+    }
+  },
+  {
+    "content": "## Observações\n\n- Caso o cliente relate suspeita de troca de chip não solicitada por ele (possível fraude/SIM swap), o caso deve ser escalonado imediatamente, conforme a Política de Suporte e Escalonamento vigente.\n- A troca de chip não gera custo adicional para o cliente titular da linha.",
+    "metadata": {
+      "doc_family_id": "proc-troca-chip-esim",
+      "version_ordinal": 1,
+      "effective_from": "2026-01-01",
+      "effective_to": null,
+      "status": "vigente",
+      "source": "procedimento_troca_chip_esim.md",
+      "category": "procedimentos",
+      "chunk_id": "proc-troca-chip-esim-v1-chunk-004"
+    }
+  }
+]

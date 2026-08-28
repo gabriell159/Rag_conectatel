@@ -1,8 +1,31 @@
+# Variáveis de ambiente / credenciais
 .env
+.env.*
+!.env.example
+
+# Ambiente virtual
 .venv/
+venv/
+
+# Python
 __pycache__/
-.idea
+*.py[cod]
+*.pyo
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs
+.idea/
+.vscode/
+
+# Arquivos processados - Parte 1
 data/processed/chunks.jsonl
 data/processed/index.npz
 data/processed/audit_log.jsonl
 data/processed/audit/
+
+# Vector store local do RAG
+data/processed/vectorstore/
