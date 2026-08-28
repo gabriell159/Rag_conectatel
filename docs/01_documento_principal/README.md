@@ -19,7 +19,7 @@ Ver a seção "O que entregar" do desafio para os requisitos completos.
 ### Decisões de Design — Parte 1: Pipeline de Dados e Análise
 
 ### 1. Decisões de Tratamento e Limpeza
-Durante a ingestão do arquivo `log_chamados_sintetico.csv`, foram identificadas diversas inconsistências típicas de logs operacionais. O pipeline de tratamento (`src/pipeline_tratamento/01_tratamento.py`) realizou as seguintes padronizações:
+Durante a ingestão do arquivo `log_chamados_sintetico.csv`, foram identificadas diversas inconsistências típicas de logs operacionais. O pipeline de tratamento (`src/01_pipeline_tratamento/01_tratamento.py`) realizou as seguintes padronizações:
 * **Desduplicação:** Remoção de linhas exatamente iguais.
 * **Padronização Textual e Booleana:** Uniformização de categorias, canais e estados (ex: mapeamento para siglas UF em maiúsculas) e conversão de múltiplos formatos de resposta ("Sim", "S", "1") para booleanos nativos (`True`/`False`).
 * **Tratamento de Valores Nulos (NaN) e Outliers:** 

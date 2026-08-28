@@ -3,7 +3,7 @@
 Repositorio de trabalho da squad para o desafio final Concierge ConectaTel.
 
 Estado atual do projeto: a implementacao propria feita ate agora esta concentrada
-na Frente 1, em `src/pipeline_tratamento`, com tratamento e analise do log de
+na Frente 1, em `src/01_pipeline_tratamento`, com tratamento e analise do log de
 chamados. Os arquivos do scaffold aparecem neste repositorio somente para
 registrar a arquitetura inicial recebida; eles nao fazem parte do pipeline atual.
 
@@ -34,7 +34,7 @@ registrar a arquitetura inicial recebida; eles nao fazem parte do pipeline atual
 |   `-- processed/                      # resultados do tratamento e etapas futuras
 |-- docs/                               # estrutura dos entregaveis finais
 |-- src/
-|   |-- pipeline_tratamento/            # implementacao atual da Frente 1
+|   |-- 01_pipeline_tratamento/        # implementacao atual da Frente 1
 |   |   |-- 00_main.py                  # orquestracao
 |   |   |-- 01_tratamento.py            # limpeza
 |   |   |-- 01_tratamento.ipynb         # apoio exploratorio
@@ -125,7 +125,7 @@ de design. As respostas do Concierge devem usar somente os documentos do corpus.
 O tratamento pode ser executado diretamente pelo script:
 
 ```text
-src/pipeline_tratamento/01_tratamento.py
+src/01_pipeline_tratamento/01_tratamento.py
 ```
 
 O script le o arquivo:
@@ -159,7 +159,7 @@ Principais tratamentos feitos:
 Com o ambiente virtual ativado:
 
 ```powershell
-python src/pipeline_tratamento/02_analise.py
+python src/01_pipeline_tratamento/02_analise.py
 ```
 
 O script imprime:
@@ -171,7 +171,7 @@ O script imprime:
 ### 3. Inspecionar os dados
 
 ```powershell
-python src/pipeline_tratamento/03_visualizacao.py
+python src/01_pipeline_tratamento/03_visualizacao.py
 ```
 
 Hoje esse script imprime as primeiras linhas do CSV bruto. Ele serve apenas como
@@ -194,7 +194,7 @@ S3_PREFIX=conectatel
 Depois rode:
 
 ```powershell
-python src/pipeline_tratamento/04_upload_s3.py
+python src/01_pipeline_tratamento/04_upload_s3.py
 ```
 
 O script atual envia somente as fontes explicitamente configuradas para:
@@ -216,13 +216,13 @@ falha.
 Para tratamento e analise, sem enviar para a AWS:
 
 ```powershell
-python src/pipeline_tratamento/00_main.py
+python src/01_pipeline_tratamento/00_main.py
 ```
 
 Para executar tambem o upload:
 
 ```powershell
-python src/pipeline_tratamento/00_main.py --upload
+python src/01_pipeline_tratamento/00_main.py --upload
 ```
 
 ## Arquitetura inicial recebida
@@ -245,7 +245,7 @@ ingestao -> indexacao -> consulta -> auditoria
 
 Eles nao sao executados pelo pipeline atual e nao representam componentes
 implementados pela squad neste momento. A implementacao atual esta restrita ao
-diretorio `src/pipeline_tratamento`.
+diretorio `src/01_pipeline_tratamento`.
 
 ## Pontos pendentes para as proximas frentes
 
@@ -269,19 +269,19 @@ python -m pip install -r requirements.txt
 Rodar analises da Frente 1:
 
 ```powershell
-python src/pipeline_tratamento/02_analise.py
+python src/01_pipeline_tratamento/02_analise.py
 ```
 
 Inspecionar CSV:
 
 ```powershell
-python src/pipeline_tratamento/03_visualizacao.py
+python src/01_pipeline_tratamento/03_visualizacao.py
 ```
 
 Upload para S3:
 
 ```powershell
-python src/pipeline_tratamento/04_upload_s3.py
+python src/01_pipeline_tratamento/04_upload_s3.py
 ```
 
 ## Limitacoes conhecidas no estado atual
