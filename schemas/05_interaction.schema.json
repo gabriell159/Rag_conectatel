@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Concierge interaction audit contract",
+  "type": "object",
+  "required": [
+    "trace_id",
+    "timestamp",
+    "duration_ms",
+    "question",
+    "decision",
+    "answer",
+    "citations",
+    "handoff"
+  ],
+  "properties": {
+    "trace_id": {"type": "string", "minLength": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "duration_ms": {"type": "integer", "minimum": 0},
+    "question": {"type": "string"},
+    "decision": {"enum": ["ANSWER", "NO_ANSWER", "ESCALATE"]},
+    "answer": {"type": "string"},
+    "guardrail": {"type": ["string", "null"]},
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_file", "doc_family_id", "version_ordinal", "status"],
+        "properties": {
+          "source_file": {"type": "string"},
+          "doc_family_id": {"type": "string"},
+          "version_ordinal": {"type": "integer"},
+          "status": {"const": "vigente"}
+        }
+      }
+    },
+    "handoff": {"type": ["object", "null"]},
+    "component_versions": {"type": "object"}
+  }
+}

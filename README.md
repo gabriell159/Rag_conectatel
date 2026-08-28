@@ -31,7 +31,10 @@ registrar a arquitetura inicial recebida; eles nao fazem parte do pipeline atual
 |   |   |   `-- log_chamados/           # CSV bruto e dicionario
 |   |   |-- exemplo_politica_reembolso_v1.md
 |   |   `-- exemplo_politica_reembolso_v2.md
+|   |-- 05_golden_set_frente5.json     # casos de avaliacao
 |   `-- processed/                      # resultados do tratamento e etapas futuras
+|-- schemas/
+|   `-- 05_interaction.schema.json      # contrato da Frente 5
 |-- docs/                               # estrutura dos entregaveis finais
 |-- src/
 |   |-- 01_pipeline_tratamento/        # implementacao atual da Frente 1
@@ -41,11 +44,19 @@ registrar a arquitetura inicial recebida; eles nao fazem parte do pipeline atual
 |   |   |-- 02_analise.py               # analises
 |   |   |-- 03_visualizacao.py          # inspecao
 |   |   `-- 04_upload_s3.py             # upload
+|   |-- 05_integracao_auditoria_qualidade/ # integracao, auditoria e qualidade
+|   |   |-- 00_contract.py
+|   |   |-- 01_trace.py
+|   |   |-- 02_audit.py
+|   |   |-- 03_mock_pipeline.py
+|   |   |-- 04_run_mock.py
+|   |   `-- 05_query_trace.py
 |   |-- ingest.py                       # scaffold de referencia
 |   |-- index.py                        # scaffold de referencia
 |   |-- query.py                        # scaffold de referencia
 |   `-- audit_log.py                    # scaffold de referencia
 |-- tests/
+|   `-- test_05_frente5.py
 |-- hello_bedrock.py                    # teste de referencia para Bedrock
 |-- requirements.txt
 `-- README.md
@@ -253,10 +264,46 @@ diretorio `src/01_pipeline_tratamento`.
 - Criar `trace_id` padronizado em toda saida.
 - Criar schema de auditoria final.
 - Criar fluxo ponta a ponta com mocks.
-- Criar `query_trace.py`.
-- Criar matriz de testes/golden set.
+- Integrar o golden set aos componentes reais das outras frentes.
 - Integrar os componentes reais das outras frentes quando estiverem prontos.
 - Atualizar este README conforme a solucao evoluir.
+
+## Frente 5: contrato e governanca
+
+A implementacao inicial da Frente 5 esta em `src/05_integracao_auditoria_qualidade`. Ela e
+independente do scaffold e usa mocks enquanto os componentes reais das outras
+frentes nao estao integrados.
+
+O contrato esta definido em `schemas/05_interaction.schema.json`. Cada interacao
+tem `trace_id`, decisao (`ANSWER`, `NO_ANSWER` ou `ESCALATE`), citacoes,
+handoff quando necessario, duracao e versao dos componentes. A auditoria local
+e gravada em `data/processed/audit/audit_log.jsonl`.
+
+Executar uma interacao simulada:
+
+```powershell
+python -m src.05_integracao_auditoria_qualidade.04_run_mock "Qual e o prazo de reembolso?"
+```
+
+Consultar uma interacao pelo `trace_id` retornado:
+
+```powershell
+python -m src.05_integracao_auditoria_qualidade.05_query_trace <trace_id>
+```
+
+Casos simulados disponiveis:
+
+```powershell
+python -m src.05_integracao_auditoria_qualidade.04_run_mock "Qual e o prazo de reembolso?"
+python -m src.05_integracao_auditoria_qualidade.04_run_mock "Qual e a previsao do tempo?"
+python -m src.05_integracao_auditoria_qualidade.04_run_mock "Estou sem sinal no meu bairro."
+```
+
+Executar os testes da Frente 5:
+
+```powershell
+python -m unittest discover -s tests -p "test_05_frente5.py" -v
+```
 
 ## Comandos uteis
 

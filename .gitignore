@@ -5,3 +5,4 @@ __pycache__/
 data/processed/chunks.jsonl
 data/processed/index.npz
 data/processed/audit_log.jsonl
+data/processed/audit/
