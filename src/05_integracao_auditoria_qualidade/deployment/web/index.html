@@ -7,17 +7,44 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="container">
-      <p class="eyebrow">DEMONSTRAÇÃO INTERNA</p>
-      <h1>Concierge ConectaTel</h1>
-      <p class="intro">Faça perguntas sobre planos, políticas e procedimentos da ConectaTel.</p>
-      <form id="question-form">
-        <label for="question">Sua pergunta</label>
-        <textarea id="question" maxlength="800" required placeholder="Ex.: Qual é o prazo para pedir reembolso?"></textarea>
-        <button id="submit-button" type="submit">Consultar</button>
-      </form>
-      <section id="result" class="result hidden" aria-live="polite"></section>
-    </main>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Conversas">
+        <div class="brand"><span class="brand-mark">C</span><span>ConectaTel</span></div>
+        <button id="new-chat" class="new-chat" type="button">+ Nova conversa</button>
+        <p class="sidebar-label">HISTÓRICO LOCAL</p>
+        <nav id="conversation-list" class="conversation-list" aria-label="Histórico de conversas"></nav>
+        <div class="sidebar-footer">
+          <span class="status-dot"></span> Demonstração interna
+          <button id="clear-history" class="text-button" type="button">Limpar histórico</button>
+        </div>
+      </aside>
+      <main class="workspace">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">RAG COM AUDITORIA E GUARDRAILS</p>
+            <h1>Concierge ConectaTel</h1>
+            <p>Consulte políticas e procedimentos com evidências do corpus vigente.</p>
+          </div>
+          <div class="session-label">Métricas locais da sessão</div>
+        </header>
+        <section id="metrics" class="metrics" aria-label="Métricas da sessão"></section>
+        <section id="chat" class="chat" aria-live="polite" aria-label="Conversa atual"></section>
+        <section class="suggestions" aria-label="Perguntas de exemplo">
+          <span>Experimente:</span>
+          <button type="button" data-question="Qual e o prazo para pedir reembolso?">Prazo de reembolso</button>
+          <button type="button" data-question="Qual e o valor do plano Conecta Básico?">Plano Básico</button>
+          <button type="button" data-question="Acredito que fizeram fraude usando minha linha.">Relatar fraude</button>
+        </section>
+        <form id="question-form" class="composer">
+          <label class="sr-only" for="question">Sua pergunta</label>
+          <textarea id="question" maxlength="800" required placeholder="Digite uma pergunta sobre a ConectaTel..."></textarea>
+          <div class="composer-footer">
+            <span>Enter para enviar · Shift + Enter para nova linha</span>
+            <button id="submit-button" type="submit">Enviar <span aria-hidden="true">↑</span></button>
+          </div>
+        </form>
+      </main>
+    </div>
     <script src="config.js"></script>
     <script src="app.js"></script>
   </body>
