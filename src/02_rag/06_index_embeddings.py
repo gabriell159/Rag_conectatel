@@ -1,4 +1,6 @@
 import json
+import hashlib
+from datetime import datetime, timezone
 from pathlib import Path
 
 import faiss
@@ -99,6 +101,18 @@ def salvar_indice(
             indent=2,
             default=str,
         )
+
+    metadata_bytes = metadata_path.read_bytes()
+    manifest = {
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "chunk_count": len(metadata),
+        "embedding_model": "amazon.titan-embed-text-v2:0",
+        "dimensions": indice.d,
+        "metadata_sha256": hashlib.sha256(metadata_bytes).hexdigest(),
+    }
+    (vectorstore_path / "manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
     print(f"Índice salvo em: {index_path}")
     print(f"Metadados salvos em: {metadata_path}")

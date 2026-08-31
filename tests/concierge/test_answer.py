@@ -1,11 +1,16 @@
 from unittest.mock import patch
+import importlib
 
 import pytest
 from botocore.exceptions import ClientError
 
-from src.concierge.answer import answer_question
-from src.concierge.confidence import has_sufficient_evidence
-from src.concierge.prompts import SYSTEM_PROMPT, build_user_prompt
+answer_module = importlib.import_module("src.03_concierge.answer")
+confidence_module = importlib.import_module("src.03_concierge.confidence")
+prompts_module = importlib.import_module("src.03_concierge.prompts")
+answer_question = answer_module.answer_question
+has_sufficient_evidence = confidence_module.has_sufficient_evidence
+SYSTEM_PROMPT = prompts_module.SYSTEM_PROMPT
+build_user_prompt = prompts_module.build_user_prompt
 
 
 def make_chunk(
@@ -41,7 +46,7 @@ def isolate_threshold_environment(monkeypatch):
 
 @pytest.mark.parametrize("question", ["", "   ", None, 123])
 def test_invalid_question_raises_value_error(question):
-    with patch("src.concierge.answer.generate_text") as generate_text:
+    with patch.object(answer_module, "generate_text") as generate_text:
         with pytest.raises(ValueError, match="question"):
             answer_question(question, [make_chunk()])
 
@@ -51,8 +56,8 @@ def test_invalid_question_raises_value_error(question):
 def test_question_is_stripped_at_the_edges():
     chunks = [make_chunk()]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value="O plano possui 8 GB.",
     ):
         result = answer_question("  Quantos GB possui o plano?  ", chunks)
@@ -61,8 +66,8 @@ def test_question_is_stripped_at_the_edges():
 
 
 def test_empty_chunks_return_no_answer_without_generation():
-    with patch("src.concierge.answer.build_user_prompt") as build_prompt:
-        with patch("src.concierge.answer.generate_text") as generate_text:
+    with patch.object(answer_module, "build_user_prompt") as build_prompt:
+        with patch.object(answer_module, "generate_text") as generate_text:
             result = answer_question("Pergunta sem contexto?", [])
 
     assert result == {
@@ -87,8 +92,8 @@ def test_empty_chunks_return_no_answer_without_generation():
 def test_calibrated_insufficient_scores_avoid_model_call(score):
     chunks = [make_chunk(score=score)]
 
-    with patch("src.concierge.answer.build_user_prompt") as build_prompt:
-        with patch("src.concierge.answer.generate_text") as generate_text:
+    with patch.object(answer_module, "build_user_prompt") as build_prompt:
+        with patch.object(answer_module, "generate_text") as generate_text:
             result = answer_question("Pergunta fora do corpus?", chunks)
 
     assert result["decision"] == "NO_ANSWER"
@@ -103,8 +108,8 @@ def test_calibrated_insufficient_scores_avoid_model_call(score):
 def test_score_at_or_above_threshold_reaches_generation(score):
     chunks = [make_chunk(score=score)]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value="Resposta sustentada.",
     ) as generate_text:
         result = answer_question("Pergunta respondível?", chunks)
@@ -116,12 +121,12 @@ def test_score_at_or_above_threshold_reaches_generation(score):
 def test_answer_question_delegates_confidence_decision():
     chunks = [make_chunk()]
 
-    with patch(
-        "src.concierge.answer.has_sufficient_evidence",
+    with patch.object(
+        answer_module, "has_sufficient_evidence",
         wraps=has_sufficient_evidence,
     ) as sufficient_evidence:
-        with patch(
-            "src.concierge.answer.generate_text",
+        with patch.object(
+            answer_module, "generate_text",
             return_value="Resposta sustentada.",
         ):
             answer_question("Pergunta respondível?", chunks)
@@ -134,12 +139,12 @@ def test_generation_uses_existing_prompt_components_once():
     question = "Quantos GB possui o Conecta Básico?"
     user_prompt = build_user_prompt(question, chunks)
 
-    with patch(
-        "src.concierge.answer.build_user_prompt",
+    with patch.object(
+        answer_module, "build_user_prompt",
         return_value=user_prompt,
     ) as build_prompt:
-        with patch(
-            "src.concierge.answer.generate_text",
+        with patch.object(
+            answer_module, "generate_text",
             return_value="8 GB",
         ) as generate_text:
             result = answer_question(question, chunks)
@@ -154,8 +159,8 @@ def test_recoverable_calibration_score_calls_model_once():
     chunks = [make_chunk(score=0.33892568945884705)]
     model_answer = "Reinicie o aparelho e verifique novamente o sinal."
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value=model_answer,
     ) as generate_text:
         result = answer_question("Como restabeleço o sinal?", chunks)
@@ -168,8 +173,8 @@ def test_recoverable_calibration_score_calls_model_once():
 def test_exact_model_no_answer_remains_no_answer_without_sources():
     chunks = [make_chunk(score=0.75)]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value="NO_ANSWER",
     ) as generate_text:
         result = answer_question("Pergunta sem suporte textual?", chunks)
@@ -187,8 +192,8 @@ def test_exact_model_no_answer_remains_no_answer_without_sources():
 def test_non_exact_no_answer_text_is_not_reinterpreted():
     chunks = [make_chunk()]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value="NO_ANSWER.",
     ):
         result = answer_question("Pergunta respondível?", chunks)
@@ -213,8 +218,8 @@ def test_sources_are_deterministic_and_preserve_chunk_order():
         ),
     ]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value="Resposta sem referências produzidas pelo modelo.",
     ):
         result = answer_question("Qual é a resposta?", chunks)
@@ -246,8 +251,8 @@ def test_retrieval_score_uses_highest_score_not_first_chunk():
         make_chunk(score=0.61, chunk_id="chunk-003"),
     ]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value="Resposta sustentada.",
     ):
         result = answer_question("Pergunta respondível?", chunks)
@@ -258,11 +263,11 @@ def test_retrieval_score_uses_highest_score_not_first_chunk():
 def test_build_user_prompt_value_error_propagates():
     chunks = [make_chunk()]
 
-    with patch(
-        "src.concierge.answer.build_user_prompt",
+    with patch.object(
+        answer_module, "build_user_prompt",
         side_effect=ValueError("prompt inválido"),
     ):
-        with patch("src.concierge.answer.generate_text") as generate_text:
+        with patch.object(answer_module, "generate_text") as generate_text:
             with pytest.raises(ValueError, match="prompt inválido"):
                 answer_question("Pergunta respondível?", chunks)
 
@@ -272,8 +277,8 @@ def test_build_user_prompt_value_error_propagates():
 def test_generation_runtime_error_propagates():
     chunks = [make_chunk()]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         side_effect=RuntimeError("resposta Bedrock inválida"),
     ):
         with pytest.raises(RuntimeError, match="Bedrock inválida"):
@@ -292,8 +297,8 @@ def test_sdk_error_propagates_unchanged():
         "Converse",
     )
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         side_effect=error,
     ):
         with pytest.raises(ClientError) as raised:
@@ -313,8 +318,8 @@ def test_sdk_error_propagates_unchanged():
 def test_answer_question_never_produces_escalate(score, model_answer):
     chunks = [make_chunk(score=score)]
 
-    with patch(
-        "src.concierge.answer.generate_text",
+    with patch.object(
+        answer_module, "generate_text",
         return_value=model_answer,
     ):
         result = answer_question("Pergunta?", chunks)

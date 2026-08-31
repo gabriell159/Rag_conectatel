@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import date
 
 import yaml
 
@@ -79,6 +80,18 @@ def validar_metadata(metadata: dict, nome_arquivo: str) -> None:
         raise ValueError(
             f"{nome_arquivo}: version_ordinal deve ser inteiro."
         )
+
+    for field in ("effective_from", "effective_to"):
+        value = metadata[field]
+        if value in (None, ""):
+            continue
+        try:
+            date.fromisoformat(str(value))
+        except ValueError as error:
+            raise ValueError(f"{nome_arquivo}: {field} deve estar em AAAA-MM-DD.") from error
+
+    if metadata["effective_to"] and str(metadata["effective_from"]) >= str(metadata["effective_to"]):
+        raise ValueError(f"{nome_arquivo}: effective_to deve ser posterior a effective_from.")
 
 
 def carregar_documento(caminho_arquivo: Path) -> dict:

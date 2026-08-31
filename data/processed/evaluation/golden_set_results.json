@@ -1,0 +1,13 @@
+{
+  "total": 37,
+  "decision_accuracy": 0.8648648648648649,
+  "source_accuracy": 0.8648648648648649,
+  "version_accuracy": 1.0,
+  "failed": [
+    "reembolso_prazo",
+    "dados_cadastrais",
+    "plano_basico_valor",
+    "cancelamento_sem_fidelidade",
+    "cancelamento_multa"
+  ]
+}

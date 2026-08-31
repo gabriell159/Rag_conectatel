@@ -11,10 +11,16 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parents[2]
 load_dotenv(BASE_DIR / ".env")
 
+# O botocore interpreta AWS_PROFILE vazio como um perfil literal vazio.
+# Removê-lo permite usar as credenciais AWS_* ou a cadeia padrão de credenciais.
+if not os.getenv("AWS_PROFILE", "").strip():
+    os.environ.pop("AWS_PROFILE", None)
+
 UPLOAD_SOURCES = {
     "data/raw/conectatel-dados/log_chamados": "raw/log_chamados",
     "data/raw/conectatel-dados/corpus": "raw/corpus",
     "data/processed/log_chamados": "processed/log_chamados",
+    "data/processed/vectorstore": "vectorstore",
 }
 
 

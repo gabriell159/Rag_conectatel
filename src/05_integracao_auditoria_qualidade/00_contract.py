@@ -22,12 +22,23 @@ def validate_interaction(event: dict[str, Any]) -> None:
         raise ValueError("duration_ms deve ser um inteiro nao negativo")
     if not isinstance(event["citations"], list):
         raise ValueError("citations deve ser uma lista")
+    for item in event["citations"]:
+        if not isinstance(item, dict):
+            raise ValueError("cada citacao deve ser um objeto")
+        required_citation = {"source_file", "doc_family_id", "version_ordinal", "status"}
+        missing_citation = required_citation - item.keys()
+        if missing_citation:
+            raise ValueError("citacao incompleta: " + ", ".join(sorted(missing_citation)))
+        if item["status"] != "vigente":
+            raise ValueError("Somente documentos vigentes podem ser citados")
     if event["decision"] == "ANSWER" and not event["citations"]:
         raise ValueError("ANSWER precisa ter ao menos uma citacao")
     if event["decision"] == "NO_ANSWER" and event["citations"]:
         raise ValueError("NO_ANSWER nao pode ter citacoes")
     if event["decision"] == "ESCALATE" and not event.get("handoff"):
         raise ValueError("ESCALATE precisa ter handoff")
+    if event.get("handoff") is not None and not isinstance(event["handoff"], dict):
+        raise ValueError("handoff deve ser um objeto ou null")
 
 
 def citation(

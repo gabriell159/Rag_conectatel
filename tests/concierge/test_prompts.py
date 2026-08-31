@@ -1,10 +1,11 @@
+import importlib
+
 import pytest
 
-from src.concierge.prompts import (
-    SYSTEM_PROMPT,
-    build_user_prompt,
-    format_context,
-)
+_prompts = importlib.import_module("src.03_concierge.prompts")
+SYSTEM_PROMPT = _prompts.SYSTEM_PROMPT
+build_user_prompt = _prompts.build_user_prompt
+format_context = _prompts.format_context
 
 
 def make_chunk(

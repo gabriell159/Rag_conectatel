@@ -3,10 +3,13 @@ from pathlib import Path
 import faiss
 import numpy as np
 
-from src.rag.embeddings import gerar_embedding
-from src.rag.s3_storage import download_vectorstore
+import importlib
 
-VECTORSTORE_PATH = Path("data/processed/vectorstore")
+gerar_embedding = importlib.import_module("src.02_rag.04_embeddings").gerar_embedding
+download_vectorstore = importlib.import_module("src.02_rag.10_s3_storage").download_vectorstore
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+VECTORSTORE_PATH = BASE_DIR / "data" / "processed" / "vectorstore"
 INDEX_PATH = VECTORSTORE_PATH / "index.faiss"
 METADATA_PATH = VECTORSTORE_PATH / "metadata.json"
 
@@ -25,7 +28,7 @@ def carregar_vectorstore(
             "Recuperando do Amazon S3..."
         )
 
-    download_vectorstore()
+        download_vectorstore()
 
     if not index_path.exists():
         raise FileNotFoundError(
@@ -149,3 +152,9 @@ def buscar(
 )
 
     return resultados
+
+
+def retrieve(question: str, top_k: int = 3) -> dict:
+    """Interface pública estável do retriever para as outras frentes."""
+
+    return {"results": buscar(question, top_k=top_k)}

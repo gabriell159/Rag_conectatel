@@ -6,7 +6,8 @@ from botocore.exceptions import BotoCoreError, ClientError
 
 
 REGION = os.getenv("AWS_REGION", "us-east-1")
-BUCKET_NAME = os.getenv("RAG_BUCKET_NAME")
+BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
+S3_PREFIX = os.getenv("S3_PREFIX", "conectatel").strip(" /")
 
 LOCAL_VECTORSTORE = Path("data/processed/vectorstore")
 
@@ -39,8 +40,16 @@ def validar_bucket_configurado() -> None:
 
     if not BUCKET_NAME:
         raise ValueError(
-            "A variável RAG_BUCKET_NAME não foi configurada."
+            "A variável S3_BUCKET_NAME não foi configurada."
         )
+
+
+def chave_com_prefixo(chave: str) -> str:
+    """Monta a chave S3 dentro do prefixo operacional da squad."""
+
+    if not S3_PREFIX:
+        raise ValueError("A variável S3_PREFIX não foi configurada.")
+    return f"{S3_PREFIX}/{chave.lstrip('/')}"
 
 
 def upload_arquivo(
@@ -64,7 +73,7 @@ def upload_arquivo(
         s3.upload_file(
             str(caminho_local),
             BUCKET_NAME,
-            chave_s3,
+            chave_com_prefixo(chave_s3),
         )
 
     except (ClientError, BotoCoreError) as error:
@@ -87,6 +96,10 @@ def upload_vectorstore() -> None:
         LOCAL_VECTORSTORE / "metadata.json",
         "metadata/metadata.json",
     )
+
+    manifest = LOCAL_VECTORSTORE / "manifest.json"
+    if manifest.exists():
+        upload_arquivo(manifest, "vectorstore/manifest.json")
 
     print("Vector store enviado ao S3 com sucesso.")
 
@@ -111,7 +124,7 @@ def download_arquivo(
     try:
         s3.download_file(
             BUCKET_NAME,
-            chave_s3,
+            chave_com_prefixo(chave_s3),
             str(caminho_local),
         )
 
@@ -137,3 +150,4 @@ def download_vectorstore() -> None:
     )
 
     print("Vector store recuperado do S3 com sucesso.")
+

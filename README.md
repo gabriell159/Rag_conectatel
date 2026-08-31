@@ -1,4 +1,4 @@
-# Concierge ConectaTel
+﻿# Concierge ConectaTel
 
 Repositorio de trabalho da squad para o desafio final Concierge ConectaTel.
 
@@ -230,11 +230,18 @@ Para tratamento e analise, sem enviar para a AWS:
 python src/01_pipeline_tratamento/00_main.py
 ```
 
+Esse fluxo tambem prepara e valida `data/processed/vectorstore` a partir do
+artefato validado em `vectorstore_backup` quando necessario.
+
 Para executar tambem o upload:
 
 ```powershell
 python src/01_pipeline_tratamento/00_main.py --upload
 ```
+
+Com `--upload`, o vector store tambem e publicado em
+`s3://<S3_BUCKET_NAME>/<S3_PREFIX>/vectorstore/`, junto dos dados brutos,
+corpus e dados processados.
 
 ## Arquitetura inicial recebida
 
@@ -283,6 +290,45 @@ Executar uma interacao simulada:
 
 ```powershell
 python -m src.05_integracao_auditoria_qualidade.04_run_mock "Qual e o prazo de reembolso?"
+```
+
+## RAG (Frente 2)
+
+O ponto de entrada numerado do Concierge esta em
+`src/03_concierge/00_main.py`. Ele carrega o `.env`, recupera os chunks
+vigentes e chama o Amazon Bedrock para gerar a resposta:
+
+```powershell
+python -m src.03_concierge.00_main "Qual e o prazo para pedir reembolso?"
+```
+
+Para esse fluxo, configure `AWS_PROFILE` (ou as credenciais AWS),
+`AWS_REGION` e `S3_BUCKET_NAME`. O bucket deve conter o indice FAISS em
+`vectorstore/index.faiss` e os metadados em `metadata/metadata.json`.
+O pipeline RAG está centralizado em `src/02_rag`; o Concierge fica em `src/03_concierge`.
+
+Cada execuÃ§Ã£o integrada gera `trace_id` e grava a interaÃ§Ã£o em
+`data/processed/audit/audit_log.jsonl`. Para avaliar o conjunto completo:
+
+```powershell
+python -m src.03_concierge.06_golden_set
+```
+
+O resultado Ã© salvo por padrÃ£o em
+`data/processed/evaluation/golden_set_results.json`. A execuÃ§Ã£o usa Bedrock e
+grava uma auditoria para cada caso.
+
+Para gerar novamente o Ã­ndice RAG do zero (incluindo embeddings e upload):
+
+```powershell
+python -m src.02_rag.08_build_index
+```
+
+Para confirmar que os objetos publicados sÃ£o exatamente os consumidos pelo
+retriever:
+
+```powershell
+python -m src.02_rag.09_verify_s3
 ```
 
 Consultar uma interacao pelo `trace_id` retornado:
