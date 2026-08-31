@@ -20,7 +20,6 @@ UPLOAD_SOURCES = {
     "data/raw/conectatel-dados/log_chamados": "raw/log_chamados",
     "data/raw/conectatel-dados/corpus": "raw/corpus",
     "data/processed/log_chamados": "processed/log_chamados",
-    "data/processed/vectorstore": "vectorstore",
 }
 
 

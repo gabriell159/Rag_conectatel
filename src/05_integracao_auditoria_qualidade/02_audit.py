@@ -1,6 +1,7 @@
 """Persistencia local da trilha de auditoria da Frente 5."""
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -18,7 +19,8 @@ DEFAULT_AUDIT_PATH = BASE_DIR / "data" / "processed" / "audit" / "audit_log.json
 
 class AuditLogger:
     def __init__(self, path: Path | None = None) -> None:
-        self.path = Path(path) if path is not None else DEFAULT_AUDIT_PATH
+        configured = os.getenv("AUDIT_LOG_PATH", "").strip()
+        self.path = Path(path) if path is not None else Path(configured) if configured else DEFAULT_AUDIT_PATH
 
     def append(self, event: dict[str, Any]) -> None:
         validate_interaction(event)

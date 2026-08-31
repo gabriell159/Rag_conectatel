@@ -5,11 +5,12 @@ import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 
 
+BASE_DIR = Path(__file__).resolve().parents[2]
 REGION = os.getenv("AWS_REGION", "us-east-1")
 BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 S3_PREFIX = os.getenv("S3_PREFIX", "conectatel").strip(" /")
 
-LOCAL_VECTORSTORE = Path("data/processed/vectorstore")
+LOCAL_VECTORSTORE = BASE_DIR / "data" / "processed" / "vectorstore"
 
 
 def criar_cliente_s3():
@@ -17,7 +18,7 @@ def criar_cliente_s3():
     Cria um cliente S3, localmente pode utilizar AWS_PROFILE, mas em ambiente AWS utiliza automaticamente a IAM Role.
     """
 
-    profile = os.getenv("AWS_PROFILE")
+    profile = (os.getenv("AWS_PROFILE") or "").strip() or None
 
     if profile:
         session = boto3.Session(

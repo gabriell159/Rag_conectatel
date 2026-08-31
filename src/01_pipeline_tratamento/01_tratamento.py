@@ -5,6 +5,12 @@ import unicodedata
 
 import pandas as pd
 
+from importlib import import_module
+
+validate_processed_dataframe = import_module(
+    "src.01_pipeline_tratamento.05_contract"
+).validate_processed_dataframe
+
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 INPUT_PATH = BASE_DIR / "data" / "raw" / "conectatel-dados" / "log_chamados" / "log_chamados_sintetico.csv"
@@ -87,6 +93,8 @@ def processar_log_chamados(
             df["satisfacao_1_a_5"], errors="coerce"
         )
         df.loc[~df["satisfacao_1_a_5"].between(1, 5), "satisfacao_1_a_5"] = None
+
+    validate_processed_dataframe(df)
 
     caminho_saida.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(caminho_saida, index=False, encoding="utf-8")

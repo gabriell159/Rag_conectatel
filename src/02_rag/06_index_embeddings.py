@@ -1,5 +1,6 @@
 import json
 import hashlib
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -7,7 +8,8 @@ import faiss
 import numpy as np
 
 
-VECTORSTORE_PATH = Path("data/processed/vectorstore")
+BASE_DIR = Path(__file__).resolve().parents[2]
+VECTORSTORE_PATH = BASE_DIR / "data" / "processed" / "vectorstore"
 INDEX_PATH = VECTORSTORE_PATH / "index.faiss"
 METADATA_PATH = VECTORSTORE_PATH / "metadata.json"
 
@@ -109,6 +111,7 @@ def salvar_indice(
         "embedding_model": "amazon.titan-embed-text-v2:0",
         "dimensions": indice.d,
         "metadata_sha256": hashlib.sha256(metadata_bytes).hexdigest(),
+        "artifact_version": os.getenv("RAG_VECTORSTORE_VERSION", "v1"),
     }
     (vectorstore_path / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"

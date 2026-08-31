@@ -6,7 +6,7 @@ from pathlib import Path
 
 AuditLogger = importlib.import_module("src.05_integracao_auditoria_qualidade.02_audit").AuditLogger
 citation = importlib.import_module("src.05_integracao_auditoria_qualidade.00_contract").citation
-run_mock = importlib.import_module("src.05_integracao_auditoria_qualidade.03_mock_pipeline").run_mock
+run_mock = importlib.import_module("src.05_integracao_auditoria_qualidade.03_offline_contract_mock").run_mock
 
 
 class Frente5ContractTests(unittest.TestCase):

@@ -1,0 +1,19 @@
+{
+  "total_interactions": 334,
+  "decisions": {
+    "ESCALATE": 41,
+    "ANSWER": 186,
+    "NO_ANSWER": 107
+  },
+  "latency_ms": {
+    "min": 0,
+    "max": 7989,
+    "mean": 2504.81,
+    "p95": 4577
+  },
+  "known_risks": [
+    "auditoria local depende do caminho configurado em AUDIT_LOG_PATH",
+    "respostas ANSWER dependem da qualidade e vigência do vector store",
+    "integrações Bedrock podem falhar por credencial, quota ou rede"
+  ]
+}

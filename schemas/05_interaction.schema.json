@@ -35,7 +35,16 @@
         }
       }
     },
-    "handoff": {"type": ["object", "null"]},
+    "handoff": {
+      "type": ["object", "null"],
+      "properties": {
+        "reason": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "requested_action": {"type": "string", "minLength": 1},
+        "priority": {"enum": ["baixa", "normal", "media", "alta"]}
+      },
+      "required": ["reason", "summary", "requested_action", "priority"]
+    },
     "component_versions": {"type": "object"}
   }
 }

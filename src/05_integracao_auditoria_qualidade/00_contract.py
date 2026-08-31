@@ -31,12 +31,21 @@ def validate_interaction(event: dict[str, Any]) -> None:
             raise ValueError("citacao incompleta: " + ", ".join(sorted(missing_citation)))
         if item["status"] != "vigente":
             raise ValueError("Somente documentos vigentes podem ser citados")
+        if not item.get("source_file") or not item.get("chunk_id"):
+            raise ValueError("citacao deve informar fonte e chunk")
+        if not isinstance(item.get("version_ordinal"), int):
+            raise ValueError("version_ordinal deve ser inteiro")
     if event["decision"] == "ANSWER" and not event["citations"]:
         raise ValueError("ANSWER precisa ter ao menos uma citacao")
     if event["decision"] == "NO_ANSWER" and event["citations"]:
         raise ValueError("NO_ANSWER nao pode ter citacoes")
     if event["decision"] == "ESCALATE" and not event.get("handoff"):
         raise ValueError("ESCALATE precisa ter handoff")
+    if event["decision"] == "ESCALATE":
+        required_handoff = {"reason", "summary", "requested_action", "priority"}
+        missing_handoff = required_handoff - event["handoff"].keys()
+        if missing_handoff:
+            raise ValueError("handoff incompleto: " + ", ".join(sorted(missing_handoff)))
     if event.get("handoff") is not None and not isinstance(event["handoff"], dict):
         raise ValueError("handoff deve ser um objeto ou null")
 
@@ -46,11 +55,13 @@ def citation(
     doc_family_id: str,
     version_ordinal: int,
     status: str = "vigente",
+    chunk_id: str = "mock-chunk-001",
 ) -> dict[str, Any]:
     if status != "vigente":
         raise ValueError("Somente documentos vigentes podem ser citados")
     return {
         "source_file": source_file,
+        "chunk_id": chunk_id,
         "doc_family_id": doc_family_id,
         "version_ordinal": version_ordinal,
         "status": status,
