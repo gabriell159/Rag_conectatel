@@ -106,3 +106,46 @@ A arquitetura do RAG foi projetada priorizando **qualidade da recuperação, ras
 O chunking estrutural preserva o contexto dos documentos, o Amazon Titan gera as representações vetoriais, o FAISS realiza a recuperação semântica e o S3 mantém os artefatos persistidos.
 
 Como principal decisão de segurança, documentos revogados não participam da busca semântica, reduzindo o risco de o assistente fundamentar respostas em políticas obsoletas.
+
+---
+
+### Kleidson Matos da Rocha
+
+- **Papel:** Frente 5 (Integração, Auditoria e Qualidade)
+- **Responsabilidades:** Integração do fluxo real entre RAG e Concierge, contrato de interação, rastreabilidade por `trace_id`, auditoria local e compartilhada no S3, validações de qualidade, testes ponta a ponta e disponibilização controlada da demonstração em AWS.
+
+### Decisões de Design — Parte 5: Integração, Auditoria e Qualidade
+
+### 1. Contrato de interação e guardrails
+
+Foi definido um contrato único para toda interação do fluxo real, aplicado antes da persistência em auditoria. O contrato estabelece três decisões possíveis:
+
+- **`ANSWER`:** exige resposta acompanhada de ao menos uma citação com `status = vigente`;
+- **`NO_ANSWER`:** não pode conter citação, evitando evidência irrelevante para perguntas fora do corpus;
+- **`ESCALATE`:** exige handoff completo, contendo motivo, resumo, ação solicitada e prioridade.
+
+Essa validação garante que a resposta exibida ao usuário permaneça coerente com as fontes recuperadas e que casos sensíveis sejam encaminhados com contexto acionável.
+
+### 2. Rastreabilidade e auditoria
+
+Cada execução recebe um `trace_id` único e registra timestamp, duração, pergunta, decisão, resposta, citações, handoff, guardrail, score de recuperação e versões dos componentes. A auditoria é gravada localmente em JSONL e pode ser compartilhada no Amazon S3, usando um objeto por interação.
+
+Também foram criados consulta por `trace_id` e relatório de qualidade. O relatório consolida volume por decisão, latência mínima/média/p95, validade do contrato, respostas com citações vigentes e escalonamentos com handoff completo.
+
+### 3. Integração ponta a ponta
+
+O mock foi mantido apenas como fixture offline para testes. O caminho principal utiliza o RAG e o Concierge reais, portanto a mesma regra documental de vigência e o mesmo modelo de decisão são usados na demonstração e na execução de linha de comando.
+
+Foram validados três cenários de ponta a ponta: uma pergunta coberta pelo corpus retorna `ANSWER` com fontes vigentes; uma pergunta fora do domínio retorna `NO_ANSWER` sem fontes; e uma suspeita de fraude retorna `ESCALATE` com prioridade alta e handoff completo.
+
+### 4. Demonstração interna em AWS
+
+Para tornar a solução demonstrável sem expor credenciais de desenvolvimento, foi implantada uma arquitetura serverless composta por API Gateway HTTP, AWS Lambda em imagem de contêiner, IAM de menor privilégio, Amazon Bedrock, S3, CloudWatch Logs e Parameter Store. A Lambda obtém o vector store oficial do S3 e usa sua própria IAM Role; as credenciais do arquivo `.env` não são enviadas para a nuvem.
+
+O parâmetro `/conectatel/demo/enabled` funciona como interruptor operacional. Quando está desativado, a API responde como indisponível e não dispara chamadas ao Bedrock. Isso permite manter a infraestrutura pronta para a banca, mas controlar o consumo e a exposição fora da apresentação.
+
+### 5. Interface de demonstração
+
+Foi desenvolvida uma interface estática hospedável no AWS Amplify. Ela apresenta conversa contínua, criação de novas conversas, histórico persistido no navegador, métricas locais da sessão, decisões, latência, citações expansíveis, guardrails, handoff e `trace_id`.
+
+As métricas da interface são explicitamente locais à sessão do navegador; as métricas consolidadas de operação continuam sendo produzidas pelo relatório de qualidade baseado na auditoria. A hospedagem pode usar integração Git ou deploy manual por `.zip`, protegida por senha para uso interno.

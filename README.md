@@ -7,7 +7,7 @@ Projeto de Concierge com pipeline de dados, RAG, Bedrock, triagem, auditoria e a
 - **01 — Pipeline:** limpeza/análise de chamados e publicação de dados no S3.
 - **02 — RAG:** ingestão, vigência, chunking, embeddings Titan, FAISS e S3.
 - **03 — Concierge:** retrieval, guardrails, Bedrock e decisões ANSWER/NO_ANSWER/ESCALATE.
-- **05 — Integração:** contrato, trace_id, handoff, auditoria e relatórios.
+- **05 — Integração:** contrato, trace_id, handoff, auditoria, relatórios e demonstração serverless na AWS.
 
 O tratamento e os testes unitários rodam localmente. RAG/Concierge real, upload S3 e golden set exigem AWS.
 
@@ -186,9 +186,56 @@ O contrato exige citações vigentes para `ANSWER`, nenhuma citação para `NO_A
 
 ### Demonstração interna na AWS
 
-A Frente 05 inclui um pacote opcional para publicar o Concierge como Lambda,
-API Gateway e interface estática no Amplify. A interface pode ser ligada ou
-desligada por parâmetro, sem remover a infraestrutura. Consulte o guia em
+A Frente 05 possui uma opção de demonstração serverless. Ela usa **API Gateway
+HTTP → Lambda → RAG no S3/Bedrock**, registra logs no CloudWatch e mantém o
+controle operacional em `/conectatel/demo/enabled` no Parameter Store. A
+Lambda usa IAM Role própria; o arquivo `.env` não é publicado.
+
+Pré-requisitos adicionais: AWS CLI autenticado, Docker Desktop em execução e
+AWS SAM CLI. Faça o build e o deploy:
+
+```powershell
+sam build --template-file src/05_integracao_auditoria_qualidade/deployment/infra/template.yaml
+sam deploy --guided --resolve-image-repos --template-file .aws-sam/build/template.yaml
+```
+
+No assistente, informe `RagBucketName`, `AuditBucketName`, `S3Prefix` e
+`AllowedOrigin`. Use o bucket que contém o vector store oficial. O output
+`ApiUrl` deve ser configurado em
+`src/05_integracao_auditoria_qualidade/deployment/web/config.js`.
+
+Ligue a demonstração apenas durante testes/apresentação:
+
+```powershell
+aws ssm put-parameter --name /conectatel/demo/enabled --type String --value true --overwrite --region us-east-1
+```
+
+Para desligá-la, altere `true` para `false`. A Lambda pode manter o valor em
+cache por até 30 segundos. Desligada, ela não invoca Bedrock nem grava novas
+interações de auditoria.
+
+#### Interface no Amplify
+
+A pasta `src/05_integracao_auditoria_qualidade/deployment/web/` contém uma
+interface estática com chat, múltiplas conversas locais, histórico no navegador,
+métricas da sessão, citações, handoff e `trace_id`. As métricas exibidas na
+interface são locais; o relatório consolidado continua sendo gerado pela Frente
+05 a partir da auditoria.
+
+O deploy pode usar integração Git no Amplify ou publicação manual. Para a
+publicação manual, compacte o **conteúdo** da pasta web e envie o ZIP em
+**Amplify → Deploy without Git**:
+
+```powershell
+Compress-Archive -Path src\05_integracao_auditoria_qualidade\deployment\web\* -DestinationPath .\conectatel-web-amplify.zip
+```
+
+Após obter a URL HTTPS do Amplify, atualize `AllowedOrigin` com o domínio exato
+do site para substituir o CORS temporário `*`. Use a proteção por senha do
+Amplify em uma demonstração interna. `.aws-sam/` e os ZIPs de publicação são
+artefatos locais e não devem ser commitados.
+
+Consulte o guia detalhado em
 [`docs/05_reflexao/deploy_interno.md`](docs/05_reflexao/deploy_interno.md).
 
 ## Golden set

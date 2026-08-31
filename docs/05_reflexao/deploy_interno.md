@@ -20,7 +20,7 @@ Na raiz do repositório, substitua os nomes de bucket pelos valores reais:
 
 ```powershell
 sam build --template-file src/05_integracao_auditoria_qualidade/deployment/infra/template.yaml
-sam deploy --guided --template-file .aws-sam/build/template.yaml
+sam deploy --guided --resolve-image-repos --template-file .aws-sam/build/template.yaml
 ```
 
 Durante o assistente, informe `RagBucketName`, `AuditBucketName`, `S3Prefix` e
@@ -31,12 +31,16 @@ O output `ApiUrl` é a URL a ser copiada para `deployment/web/config.js`.
 
 ## Publicar a interface no Amplify
 
-1. Copie o `ApiUrl` para `config.js` e faça commit dessa URL pública.
-2. No console AWS, abra **Amplify** → **New app** → **Host web app**.
-3. Conecte o repositório GitHub e escolha a branch de demonstração.
-4. Defina o diretório raiz como `src/05_integracao_auditoria_qualidade/deployment/web`.
-5. Configure o build como estático, sem comando de build, com artefatos em `.`.
-6. Após o deploy, copie a URL HTTPS do Amplify e atualize o parâmetro
+1. Copie o `ApiUrl` para `config.js`. A URL da API não é segredo.
+2. Para deploy contínuo, conecte o repositório GitHub no **Amplify** → **Host web app**. O `amplify.yml` da raiz aponta para a pasta web.
+3. Se a integração Git não tiver permissão para criar webhooks, use **Deploy without Git** e envie um ZIP com o conteúdo de `deployment/web`:
+
+   ```powershell
+   Compress-Archive -Path src\05_integracao_auditoria_qualidade\deployment\web\* -DestinationPath .\conectatel-web-amplify.zip
+   ```
+
+4. Ative proteção por senha para uma demonstração interna, se aplicável.
+5. Após o deploy, copie a URL HTTPS do Amplify e atualize o parâmetro
    `AllowedOrigin` do stack SAM para essa URL.
 
 ## Ligar e desligar
