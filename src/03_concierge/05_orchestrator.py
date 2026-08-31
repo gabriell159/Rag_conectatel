@@ -71,7 +71,7 @@ def _citations(chunks: list[dict]) -> list[dict[str, Any]]:
         citations.append({
             "source_file": metadata.get("source", chunk.get("document", "")),
             "chunk_id": chunk.get("chunk_id", metadata.get("chunk_id", "")),
-            "score": chunk.get("score"),
+            "score": float(chunk.get("score") or 0.0),
             "doc_family_id": metadata.get("doc_family_id", ""),
             "version_ordinal": metadata.get("version_ordinal"),
             "status": chunk.get("status", metadata.get("status")),

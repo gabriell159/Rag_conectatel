@@ -37,8 +37,12 @@ def validate_interaction(event: dict[str, Any]) -> None:
             raise ValueError("version_ordinal deve ser inteiro")
     if event["decision"] == "ANSWER" and not event["citations"]:
         raise ValueError("ANSWER precisa ter ao menos uma citacao")
+    if event["decision"] == "ANSWER" and event.get("handoff") is not None:
+        raise ValueError("ANSWER nao pode conter handoff")
     if event["decision"] == "NO_ANSWER" and event["citations"]:
         raise ValueError("NO_ANSWER nao pode ter citacoes")
+    if event["decision"] == "NO_ANSWER" and event.get("handoff") is not None:
+        raise ValueError("NO_ANSWER nao pode conter handoff")
     if event["decision"] == "ESCALATE" and not event.get("handoff"):
         raise ValueError("ESCALATE precisa ter handoff")
     if event["decision"] == "ESCALATE":
@@ -56,12 +60,14 @@ def citation(
     version_ordinal: int,
     status: str = "vigente",
     chunk_id: str = "mock-chunk-001",
+    score: float = 1.0,
 ) -> dict[str, Any]:
     if status != "vigente":
         raise ValueError("Somente documentos vigentes podem ser citados")
     return {
         "source_file": source_file,
         "chunk_id": chunk_id,
+        "score": float(score),
         "doc_family_id": doc_family_id,
         "version_ordinal": version_ordinal,
         "status": status,

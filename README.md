@@ -54,6 +54,8 @@ BEDROCK_EMBEDDING_MODEL_ID=amazon.titan-embed-text-v2:0
 ABSTENTION_THRESHOLD=0.30
 RAG_VECTORSTORE_VERSION=v1
 AUDIT_LOG_PATH=data/processed/audit/audit_log.jsonl
+AUDIT_S3_BUCKET=
+AUDIT_S3_PREFIX=conectatel/audit
 ```
 
 Use credenciais `AWS_*` ou `AWS_PROFILE`. Nunca commite o `.env`.
@@ -199,6 +201,10 @@ data/processed/evaluation/golden_set_history.jsonl
 data/processed/evaluation/quality_report.json
 data/processed/audit/audit_log.jsonl
 ```
+
+O JSONL é a persistência local padrão. Para uma trilha compartilhada, preencha
+`AUDIT_S3_BUCKET` e `AUDIT_S3_PREFIX`; cada evento será validado pelo contrato
+e gravado como `<prefix>/<trace_id>.json` no S3, além da cópia local.
 
 Regenerar/validar o conjunto:
 

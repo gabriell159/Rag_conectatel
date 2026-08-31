@@ -3,8 +3,11 @@
 import argparse
 import json
 from pathlib import Path
+from dotenv import load_dotenv
 
 from importlib import import_module
+
+load_dotenv()
 
 
 run_question = import_module("src.03_concierge.05_orchestrator").run_question

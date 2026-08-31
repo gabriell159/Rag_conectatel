@@ -1,15 +1,26 @@
 {
-  "total_interactions": 334,
+  "total_interactions": 491,
   "decisions": {
-    "ESCALATE": 41,
-    "ANSWER": 186,
-    "NO_ANSWER": 107
+    "ESCALATE": 57,
+    "ANSWER": 290,
+    "NO_ANSWER": 144
   },
   "latency_ms": {
     "min": 0,
     "max": 7989,
-    "mean": 2504.81,
-    "p95": 4577
+    "mean": 2513.56,
+    "p95": 4256
+  },
+  "contract": {
+    "valid_interactions": 491,
+    "invalid_interactions": 0,
+    "errors": []
+  },
+  "quality_checks": {
+    "answer_with_current_citations": 290,
+    "answer_total": 290,
+    "escalate_with_complete_handoff": 57,
+    "escalate_total": 57
   },
   "known_risks": [
     "auditoria local depende do caminho configurado em AUDIT_LOG_PATH",
