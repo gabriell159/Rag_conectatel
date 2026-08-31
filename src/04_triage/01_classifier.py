@@ -1,10 +1,12 @@
-"""Classificador determinístico para os 8 critérios da política de suporte."""
-
 import re
-from typing import Any, Dict
+import unicodedata
+from typing import Any, Dict, Optional, Tuple
 
-RULES: Dict[str, Dict[str, Any]] = {
+
+ESCALATION_RULES: Dict[str, Dict[str, Any]] = {
     "fraude": {
+        "category_key": "Suspeita de fraude",
+        "priority": "alta",
         "patterns": [
             r"\bfraude\b",
             r"\bgolpe\b",
@@ -16,33 +18,33 @@ RULES: Dict[str, Dict[str, Any]] = {
             r"\broubo de linha\b",
             r"\bse passaram por mim\b",
         ],
-        "category_key": "fraude",
-        "urgencia": "alta",
     },
     "contestacao_alta_valor": {
+        "category_key": "Contestacao de valor igual ou superior a R$ 500,00",
+        "priority": "alta",
         "patterns": [
-            r"contestar.*r\$\s*([5-9]\d{2,}|\d{4,})",
+            r"contesta.*r\$\s*([5-9]\d{2,}|\d{4,})",
             r"cobranca.*r\$\s*([5-9]\d{2,}|\d{4,})",
             r"fatura.*r\$\s*([5-9]\d{2,}|\d{4,})",
             r"reembolso.*r\$\s*([5-9]\d{2,}|\d{4,})",
             r"r\$\s*([5-9]\d{2,}|\d{4,})",
         ],
-        "category_key": "contestacao_alta_valor",
-        "urgencia": "media",
     },
     "multa_fidelidade_contestada": {
+        "category_key": "Contestacao de multa de fidelidade",
+        "priority": "media",
         "patterns": [
-            r"multa.*cancelamento",
-            r"cancelamento.*multa",
-            r"fidelidade.*multa",
-            r"multa.*fidelidade",
-            r"nao concordo.*multa",
-            r"contesta.*multa",
+            r"multa.*cancelamento.*(nao concordo|discordo|contesto|abusiva|incabivel)",
+            r"cancelamento.*multa.*(nao concordo|discordo|contesto|abusiva|incabivel)",
+            r"(nao concordo|discordo|contesto|contestacao).*(multa|fidelidade)",
+            r"multa.*(fidelidade|cancelamento).*(nao concordo|discordo|contesto)",
+            r"\bcontestar multa\b",
+            r"\bmulta abusiva\b",
         ],
-        "category_key": "multa_fidelidade_contestada",
-        "urgencia": "media",
     },
     "titularidade_falecimento": {
+        "category_key": "Alteracao de titularidade por falecimento ou documentacao especial",
+        "priority": "alta",
         "patterns": [
             r"\bfalec\w*\b",
             r"\bobito\b",
@@ -50,11 +52,12 @@ RULES: Dict[str, Dict[str, Any]] = {
             r"\bmorreu\b",
             r"titular.*faleceu",
             r"mudar titularidade.*falece",
+            r"alterar titularidade.*falec",
         ],
-        "category_key": "titularidade_falecimento",
-        "urgencia": "alta",
     },
     "reclamacao_orgao_externo": {
+        "category_key": "Reclamacao registrada em orgao externo ou mencao a acao judicial",
+        "priority": "alta",
         "patterns": [
             r"\banatel\b",
             r"\bprocon\b",
@@ -65,88 +68,86 @@ RULES: Dict[str, Dict[str, Any]] = {
             r"\bjustica\b",
             r"\bacao judicial\b",
         ],
-        "category_key": "reclamacao_orgao_externo",
-        "urgencia": "alta",
     },
     "assedio_discriminacao": {
+        "category_key": "Relato de assedio, discriminacao ou conduta abusiva",
+        "priority": "alta",
         "patterns": [
             r"\bassedio\b",
             r"\bdiscriminacao\b",
             r"\bracismo\b",
             r"\babusiv[ao]\b",
             r"\bagressao\b",
-            r"\bxingou\b",
-            r"\boftend\w*\b",
+            r"\bofensa\b",
+            r"\bme xingou\b",
+            r"\bma conduta\b",
         ],
-        "category_key": "assedio_discriminacao",
-        "urgencia": "alta",
     },
-    "visita_tecnica": {
+    "visita_tecnica_presencial": {
+        "category_key": "Problema tecnico que exige visita presencial",
+        "priority": "media",
         "patterns": [
-            r"visita tecnica",
-            r"tecnico.*residencia",
-            r"tecnico.*casa",
-            r"reparo.*infraestrutura",
-            r"instalacao.*fibra",
-            r"reparo.*rede",
-            r"tecnico presencial",
+            r"\bvisita tecnica\b",
+            r"\bvisita presencial\b",
+            r"\btecnico na minha residencia\b",
+            r"\breparo de infraestrutura\b",
+            r"\binstalacao de fibra\b",
+            r"\binstalacao de internet fixa\b",
+            r"\bcabo rompido\b",
+            r"sem sinal h[a|a\s] (horas|dias)",
         ],
-        "category_key": "visita_tecnica",
-        "urgencia": "media",
     },
 }
 
 
-def _remove_accents(text: str) -> str:
-    import unicodedata
-
+def normalize_text(text: str) -> str:
     normalized = unicodedata.normalize("NFKD", text)
-    return "".join(c for c in normalized if not unicodedata.combining(c))
+    without_accents = "".join(c for c in normalized if not unicodedata.combining(c))
+    return without_accents.lower().strip()
 
 
-def classify(question: str) -> Dict[str, Any]:
-    """Avalia se a pergunta aciona um dos critérios de escalonamento."""
-    if not isinstance(question, str) or not question.strip():
-        return {
-            "requires_human": False,
-            "category": None,
-            "urgencia": "baixa",
-            "reason": None,
-        }
-
-    normalized_text = _remove_accents(question.strip().lower())
-
-    value_match = re.search(r"(?:r\$\s*|valor\s*de\s*|fatura\s*de\s*)(\d+(?:\.\d{3})*(?:,\d{2})?)", normalized_text)
-    if value_match:
-        val_str = value_match.group(1).replace(".", "").replace(",", ".")
+def check_high_value_contest(text: str) -> bool:
+    match = re.search(r"r\$\s*([\d.,]+)", text)
+    if match:
         try:
-            val = float(val_str)
-            if val >= 500.0 and any(kw in normalized_text for kw in ["fatura", "cobranca", "reembolso", "contest"]):
-                return {
-                    "requires_human": True,
-                    "category": "contestacao_alta_valor",
-                    "urgencia": "media",
-                    "reason": f"Valor R$ {val:.2f} é igual ou superior ao limite de R$ 500,00.",
-                }
+            val_str = match.group(1).replace(".", "").replace(",", ".")
+            value = float(val_str)
+            return value >= 500.0
         except ValueError:
-            pass
+            return False
+    return False
 
-    for rule_key, rule_data in RULES.items():
-        if rule_key == "contestacao_alta_valor":
+
+def classify_escalation(
+    question: str,
+    top_score: Optional[float] = None,
+    abstention_threshold: float = 0.30
+) -> Tuple[bool, Optional[Dict[str, Any]]]:
+    normalized_question = normalize_text(question)
+
+    for rule_id, rule_info in ESCALATION_RULES.items():
+        if rule_id == "contestacao_alta_valor":
+            if check_high_value_contest(normalized_question):
+                return True, {
+                    "rule_id": rule_id,
+                    "category_key": rule_info["category_key"],
+                    "priority": rule_info["priority"],
+                }
             continue
 
-        for pattern in rule_data["patterns"]:
-            if re.search(pattern, normalized_text):
-                return {
-                    "requires_human": True,
-                    "category": rule_data["category_key"],
-                    "urgencia": rule_data["urgencia"],
-                    "reason": f"Gatilho ativado para a categoria {rule_data['category_key']}.",
+        for pattern in rule_info["patterns"]:
+            if re.search(pattern, normalized_question):
+                return True, {
+                    "rule_id": rule_id,
+                    "category_key": rule_info["category_key"],
+                    "priority": rule_info["priority"],
                 }
 
-    return {
-        "requires_human": False,
-        "category": None,
-        "urgencia": "baixa",
-        "reason": None,
-    }
+    if top_score is not None and top_score < abstention_threshold:
+        return True, {
+            "rule_id": "ausencia_fonte_suficiente",
+            "category_key": "Pergunta sem fonte suficiente na base de conhecimento vigente",
+            "priority": "baixa",
+        }
+
+    return False, None
