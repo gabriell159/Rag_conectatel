@@ -1,341 +1,258 @@
 # Concierge ConectaTel
 
-Repositorio de trabalho da squad para o desafio final Concierge ConectaTel.
+Projeto de Concierge com pipeline de dados, RAG, Bedrock, triagem, auditoria e avaliação.
 
-Estado atual do projeto: a implementacao propria feita ate agora esta concentrada
-na Frente 1, em `src/01_pipeline_tratamento`, com tratamento e analise do log de
-chamados. Os arquivos do scaffold aparecem neste repositorio somente para
-registrar a arquitetura inicial recebida; eles nao fazem parte do pipeline atual.
+## Frentes
 
-## O que existe hoje
+- **01 — Pipeline:** limpeza/análise de chamados e publicação de dados no S3.
+- **02 — RAG:** ingestão, vigência, chunking, embeddings Titan, FAISS e S3.
+- **03 — Concierge:** retrieval, guardrails, Bedrock e decisões ANSWER/NO_ANSWER/ESCALATE.
+- **05 — Integração:** contrato, trace_id, handoff, auditoria e relatórios.
 
-- Tratamento do CSV sintetico de chamados.
-- Geracao do arquivo limpo `chamados_clean.csv`.
-- Analises descritivas iniciais sobre volume, resolucao no primeiro contato e
-  escalonamento por canal.
-- Script de apoio para inspecionar os dados.
-- Script de upload da pasta `data/raw` para S3.
-- Corpus oficial da ConectaTel disponivel localmente em
-  `data/raw/conectatel-dados/corpus`.
-- Arquivos do scaffold original, mantidos apenas como referencia da arquitetura
-  inicial.
+O tratamento e os testes unitários rodam localmente. RAG/Concierge real, upload S3 e golden set exigem AWS.
 
-## Estrutura principal
+> O projeto não é executado sem instalação prévia: é necessário ter Python,
+> as dependências do `requirements.txt` e, para o fluxo real, acesso AWS.
 
-```text
-.
-|-- data/
-|   |-- raw/
-|   |   |-- conectatel-dados/
-|   |   |   |-- corpus/                 # documentos oficiais para RAG
-|   |   |   `-- log_chamados/           # CSV bruto e dicionario
-|   |   |-- exemplo_politica_reembolso_v1.md
-|   |   `-- exemplo_politica_reembolso_v2.md
-|   |-- 05_golden_set_frente5.json     # casos de avaliacao
-|   `-- processed/                      # resultados do tratamento e etapas futuras
-|-- schemas/
-|   `-- 05_interaction.schema.json      # contrato da Frente 5
-|-- docs/                               # estrutura dos entregaveis finais
-|-- src/
-|   |-- 01_pipeline_tratamento/        # implementacao atual da Frente 1
-|   |   |-- 00_main.py                  # orquestracao
-|   |   |-- 01_tratamento.py            # limpeza
-|   |   |-- 01_tratamento.ipynb         # apoio exploratorio
-|   |   |-- 02_analise.py               # analises
-|   |   |-- 03_visualizacao.py          # inspecao
-|   |   `-- 04_upload_s3.py             # upload
-|   |-- 05_integracao_auditoria_qualidade/ # integracao, auditoria e qualidade
-|   |   |-- 00_contract.py
-|   |   |-- 01_trace.py
-|   |   |-- 02_audit.py
-|   |   |-- 03_mock_pipeline.py
-|   |   |-- 04_run_mock.py
-|   |   `-- 05_query_trace.py
-|   |-- ingest.py                       # scaffold de referencia
-|   |-- index.py                        # scaffold de referencia
-|   |-- query.py                        # scaffold de referencia
-|   `-- audit_log.py                    # scaffold de referencia
-|-- tests/
-|   `-- test_05_frente5.py
-|-- hello_bedrock.py                    # teste de referencia para Bedrock
-|-- requirements.txt
-`-- README.md
-```
+## Instalação no Windows
 
-## Pre-requisitos
-
-- Python 3.10 ou superior.
-- `pip`.
-- Para rodar o upload S3: credenciais AWS configuradas.
-- Para o notebook: Jupyter ou extensao equivalente no VS Code.
-
-## Como preparar o ambiente
-
-No Windows PowerShell, a partir da raiz do projeto:
+Pré-requisitos: Windows 10/11 e Python 3.11+.
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Crie o arquivo local de configuracao a partir do modelo e preencha as
-credenciais necessarias:
+A ativação é opcional. Se quiser ativar:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```
+
+Se o PowerShell bloquear scripts, use diretamente ` .\.venv\Scripts\python.exe ` nos comandos.
+
+## Configuração AWS
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-O arquivo `.env` e ignorado pelo Git. Nunca publique credenciais reais no
-repositorio. Para usar credenciais temporarias da AWS, preencha tambem
-`AWS_SESSION_TOKEN`. O boto3 tambem pode usar perfis configurados localmente,
-e o upload atual carrega as variaveis do `.env` quando presentes.
-
-Se o PowerShell bloquear a ativacao do ambiente virtual, rode:
-
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-Depois feche e abra o PowerShell novamente, ou execute de novo o comando de
-ativacao.
-
-## Dados usados atualmente
-
-Entrada bruta:
-
-```text
-data/raw/conectatel-dados/log_chamados/log_chamados_sintetico.csv
-```
-
-Arquivo limpo gerado pela Frente 1:
-
-```text
-data/processed/log_chamados/chamados_clean.csv
-```
-
-Dicionario dos campos:
-
-```text
-data/raw/conectatel-dados/log_chamados/dicionario_dados.md
-```
-
-Corpus documental oficial para as proximas frentes:
-
-```text
-data/raw/conectatel-dados/corpus/
-```
-
-Importante: o log de chamados serve para a Parte 1, analise de dados e decisoes
-de design. As respostas do Concierge devem usar somente os documentos do corpus.
-
-## Como rodar o que ja foi montado
-
-### 1. Rodar o tratamento do CSV
-
-O tratamento pode ser executado diretamente pelo script:
-
-```text
-src/01_pipeline_tratamento/01_tratamento.py
-```
-
-O script le o arquivo:
-
-```text
-data/raw/conectatel-dados/log_chamados/log_chamados_sintetico.csv
-```
-
-e salva:
-
-```text
-data/processed/log_chamados/chamados_clean.csv
-```
-
-O notebook `01_tratamento.ipynb` permanece como apoio para exploracao e
-apresentacao. Ele usa os mesmos caminhos de entrada e saida, mas nao e
-necessario para executar o pipeline.
-
-Principais tratamentos feitos:
-
-- remocao de duplicidades;
-- normalizacao de canais, categorias, cidades, planos e textos;
-- padronizacao de estados para UF;
-- conversao de booleanos para `True`/`False`;
-- conversao e limpeza de datas;
-- tratamento de duracoes invalidas ou fora de faixa;
-- tratamento de satisfacao fora do intervalo 1 a 5.
-
-### 2. Rodar as analises descritivas
-
-Com o ambiente virtual ativado:
-
-```powershell
-python src/01_pipeline_tratamento/02_analise.py
-```
-
-O script imprime:
-
-- volume percentual de chamados por categoria;
-- taxa de resolucao no primeiro contato por categoria;
-- taxa de escalonamento humano por canal.
-
-### 3. Inspecionar os dados
-
-```powershell
-python src/01_pipeline_tratamento/03_visualizacao.py
-```
-
-Hoje esse script imprime as primeiras linhas do CSV bruto. Ele serve apenas como
-apoio de inspecao.
-
-### 4. Enviar dados para S3
-
-Antes de rodar, copie `.env.example` para `.env` e preencha as credenciais AWS
-necessarias. As variaveis atualmente reconhecidas sao:
+Preencha no `.env`:
 
 ```env
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
-AWS_SESSION_TOKEN=...
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_SESSION_TOKEN=
 AWS_REGION=us-east-1
-S3_BUCKET_NAME=nome-do-bucket
+AWS_PROFILE=
+S3_BUCKET_NAME=seu-bucket
 S3_PREFIX=conectatel
+BEDROCK_MODEL_ID=mistral.mistral-large-3-675b-instruct
+BEDROCK_EMBEDDING_MODEL_ID=amazon.titan-embed-text-v2:0
+ABSTENTION_THRESHOLD=0.30
+RAG_VECTORSTORE_VERSION=v1
+AUDIT_LOG_PATH=data/processed/audit/audit_log.jsonl
+AUDIT_S3_BUCKET=
+AUDIT_S3_PREFIX=conectatel/audit
 ```
 
-Depois rode:
+Use credenciais `AWS_*` ou `AWS_PROFILE`. Nunca commite o `.env`.
+
+Valide a instalação e a identidade AWS antes de executar as etapas remotas:
 
 ```powershell
-python src/01_pipeline_tratamento/04_upload_s3.py
+.\.venv\Scripts\python.exe --version
+.\.venv\Scripts\python.exe -c "import boto3; print(boto3.__version__)"
+aws sts get-caller-identity
 ```
 
-O script atual envia somente as fontes explicitamente configuradas para:
+O usuário/role precisa conseguir ler e gravar os objetos do bucket configurado
+(`s3:ListBucket`, `s3:GetObject` e `s3:PutObject`) e invocar os modelos
+habilitados no Bedrock (`bedrock:InvokeModel`). A região do `.env` deve ser uma
+região em que esses modelos estejam disponíveis para a conta.
+
+## Ordem recomendada da primeira execução
 
 ```text
-s3://<S3_BUCKET_NAME>/<S3_PREFIX>/raw/log_chamados/
-s3://<S3_BUCKET_NAME>/<S3_PREFIX>/raw/corpus/
-s3://<S3_BUCKET_NAME>/<S3_PREFIX>/processed/log_chamados/
+instalar dependências → configurar .env → executar Frente 01
+→ gerar/publicar o RAG → verificar S3 → executar Concierge
+→ executar testes e golden set
 ```
 
-O upload valida `S3_BUCKET_NAME`, `AWS_REGION`, `S3_PREFIX` e as pastas locais
-antes de iniciar. O bucket precisa existir previamente e ser provisionado pela
-administracao AWS; o pipeline operacional nao executa `HeadBucket` nem
-`CreateBucket`. Ao final, informa quantos arquivos foram enviados e lista
-individualmente qualquer falha.
-
-### 5. Executar o fluxo completo da Frente 1
-
-Para tratamento e analise, sem enviar para a AWS:
+## Frente 01 — pipeline
 
 ```powershell
-python src/01_pipeline_tratamento/00_main.py
+.\.venv\Scripts\python.exe -m src.01_pipeline_tratamento.00_main
 ```
 
-Para executar tambem o upload:
+Saída: `data/processed/log_chamados/chamados_clean.csv`.
+
+Publicar somente os dados da Frente 01:
 
 ```powershell
-python src/01_pipeline_tratamento/00_main.py --upload
+.\.venv\Scripts\python.exe -m src.01_pipeline_tratamento.00_main --upload
 ```
 
-## Arquitetura inicial recebida
+O `--upload` publica apenas os artefatos da Frente 01. Ele não substitui a
+construção do índice RAG; execute também `src.02_rag.00_main --build`.
 
-Os arquivos abaixo vieram como base do desafio:
+## Frente 02 — RAG
 
-- `hello_bedrock.py`
-- `src/ingest.py`
-- `src/index.py`
-- `src/query.py`
-- `src/audit_log.py`
-- `tests/test_hello_bedrock.py`
-
-Esses arquivos vieram no scaffold base do desafio e registram a arquitetura
-inicial proposta:
+Fluxo oficial:
 
 ```text
-ingestao -> indexacao -> consulta -> auditoria
+ingestão → metadados/vigência → chunking → embeddings → FAISS → upload S3
 ```
 
-Eles nao sao executados pelo pipeline atual e nao representam componentes
-implementados pela squad neste momento. A implementacao atual esta restrita ao
-diretorio `src/01_pipeline_tratamento`.
-
-## Pontos pendentes para as proximas frentes
-
-- Criar contrato JSON comum entre RAG, Concierge, Triagem e Auditoria.
-- Criar `trace_id` padronizado em toda saida.
-- Criar schema de auditoria final.
-- Criar fluxo ponta a ponta com mocks.
-- Integrar o golden set aos componentes reais das outras frentes.
-- Integrar os componentes reais das outras frentes quando estiverem prontos.
-- Atualizar este README conforme a solucao evoluir.
-
-## Frente 5: contrato e governanca
-
-A implementacao inicial da Frente 5 esta em `src/05_integracao_auditoria_qualidade`. Ela e
-independente do scaffold e usa mocks enquanto os componentes reais das outras
-frentes nao estao integrados.
-
-O contrato esta definido em `schemas/05_interaction.schema.json`. Cada interacao
-tem `trace_id`, decisao (`ANSWER`, `NO_ANSWER` ou `ESCALATE`), citacoes,
-handoff quando necessario, duracao e versao dos componentes. A auditoria local
-e gravada em `data/processed/audit/audit_log.jsonl`.
-
-Executar uma interacao simulada:
+Gerar o vector store do zero:
 
 ```powershell
-python -m src.05_integracao_auditoria_qualidade.04_run_mock "Qual e o prazo de reembolso?"
+.\.venv\Scripts\python.exe -m src.02_rag.00_main --build
 ```
 
-Consultar uma interacao pelo `trace_id` retornado:
+Artefatos locais em `data/processed/vectorstore/`:
+
+- `index.faiss`: embeddings Titan normalizados, 1024 dimensões.
+- `metadata.json`: conteúdo e metadados dos chunks.
+- `manifest.json`: versão, modelo, dimensão, quantidade e hash.
+
+Verificar os objetos S3:
 
 ```powershell
-python -m src.05_integracao_auditoria_qualidade.05_query_trace <trace_id>
+.\.venv\Scripts\python.exe -m src.02_rag.00_main --verify
 ```
 
-Casos simulados disponiveis:
+Com `S3_PREFIX=conectatel`:
+
+```text
+s3://SEU_BUCKET/conectatel/vectorstore/index.faiss
+s3://SEU_BUCKET/conectatel/metadata/metadata.json
+s3://SEU_BUCKET/conectatel/vectorstore/manifest.json
+```
+
+O retriever usa o vector store oficial local, depois tenta o S3. `vectorstore_backup` é apenas salvaguarda quando o download oficial falha.
+
+## Frente 03 — Concierge real
 
 ```powershell
-python -m src.05_integracao_auditoria_qualidade.04_run_mock "Qual e o prazo de reembolso?"
-python -m src.05_integracao_auditoria_qualidade.04_run_mock "Qual e a previsao do tempo?"
-python -m src.05_integracao_auditoria_qualidade.04_run_mock "Estou sem sinal no meu bairro."
+.\.venv\Scripts\python.exe -m src.03_concierge.00_main "Qual e o prazo para pedir reembolso?"
 ```
 
-Executar os testes da Frente 5:
+A saída JSON contém `trace_id`, `decision`, `answer`, `citations`, `handoff`, `retrieval` e `component_versions`.
+
+Exemplo resumido de resposta informativa:
+
+```json
+{
+  "decision": "ANSWER",
+  "answer": "90 dias corridos a partir da data de vencimento da fatura.",
+  "citations": [{"document": "politica_reembolso_v2.md", "status": "vigente"}]
+}
+```
+
+Perguntas fora do corpus retornam `NO_ANSWER`; solicitações que exigem ação
+humana retornam `ESCALATE` com um `handoff` rastreável.
+
+## Frente 05 — integração e auditoria
+
+Executor real:
 
 ```powershell
-python -m unittest discover -s tests -p "test_05_frente5.py" -v
+.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.04_run_real "Qual e o prazo para pedir reembolso?"
 ```
 
-## Comandos uteis
-
-Instalar dependencias:
+Mock offline, somente para testes:
 
 ```powershell
-python -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.04_run_mock "Estou sem sinal."
 ```
 
-Rodar analises da Frente 1:
+Consultar uma interação:
 
 ```powershell
-python src/01_pipeline_tratamento/02_analise.py
+.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.05_query_trace <trace_id>
 ```
 
-Inspecionar CSV:
+Gerar métricas:
 
 ```powershell
-python src/01_pipeline_tratamento/03_visualizacao.py
+.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.06_quality_report
 ```
 
-Upload para S3:
+O contrato exige citações vigentes para `ANSWER`, nenhuma citação para `NO_ANSWER` e handoff completo para `ESCALATE`.
+
+## Golden set
+
+O conjunto possui 200 perguntas fundamentadas nos documentos oficiais.
 
 ```powershell
-python src/01_pipeline_tratamento/04_upload_s3.py
+.\.venv\Scripts\python.exe -m src.03_concierge.06_golden_set
 ```
 
-## Limitacoes conhecidas no estado atual
+Saídas: `data/processed/evaluation/golden_set_results.json` e `golden_set_history.jsonl`.
 
-- A solucao final de RAG ainda nao foi implementada pela squad.
-- A triagem e o escalonamento ainda nao foram integrados.
-- A auditoria final com `trace_id` ainda nao foi implementada.
-- O bucket e os prefixos dependem do `.env` preenchido; o bucket deve existir previamente.
-- O notebook de tratamento e opcional; o script Python e o ponto principal de execucao.
-- Os scripts dependem das bibliotecas listadas em `requirements.txt`.
+Os principais artefatos de avaliação e auditoria são:
+
+```text
+data/processed/evaluation/golden_set_results.json
+data/processed/evaluation/golden_set_history.jsonl
+data/processed/evaluation/quality_report.json
+data/processed/audit/audit_log.jsonl
+```
+
+O JSONL é a persistência local padrão. Para uma trilha compartilhada, preencha
+`AUDIT_S3_BUCKET` e `AUDIT_S3_PREFIX`; cada evento será validado pelo contrato
+e gravado como `<prefix>/<trace_id>.json` no S3, além da cópia local.
+
+Regenerar/validar o conjunto:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.03_concierge.07_expand_golden_set
+```
+
+## Testes
+
+Unitários e locais:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q -m "not integration"
+```
+
+Integração com AWS:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q -m integration
+```
+
+Todos:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+## Estrutura
+
+```text
+src/01_pipeline_tratamento/             Frente 01
+src/02_rag/                             Frente 02
+src/03_concierge/                       Frente 03
+src/05_integracao_auditoria_qualidade/  Frente 05
+data/raw/conectatel-dados/corpus/       corpus oficial
+data/processed/vectorstore/             índice RAG
+data/processed/audit/                   auditoria
+schemas/05_interaction.schema.json      contrato
+tests/                                  testes
+docs/                                   documentação
+TODO.md                                pendências
+```
+
+## Problemas comuns
+
+- **Python não encontrado:** use `py -3.11`.
+- **PowerShell bloqueado:** use `RemoteSigned` ou o Python do `.venv`.
+- **ProfileNotFound:** deixe `AWS_PROFILE=` vazio ou informe um perfil existente.
+- **404 no S3:** execute o build e confira bucket, prefixo e caminhos.
+- **Erro no Bedrock:** confira região, modelo habilitado e `bedrock:InvokeModel`.
+- **Golden set demorado:** acompanhe `data/processed/audit/audit_log.jsonl`.

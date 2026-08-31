@@ -1,12 +1,13 @@
+import importlib
+
 import pytest
 
-from src.concierge.confidence import (
-    DEFAULT_ABSTENTION_THRESHOLD,
-    get_abstention_threshold,
-    get_top_score,
-    has_sufficient_evidence,
-    has_valid_evidence_contract,
-)
+_confidence = importlib.import_module("src.03_concierge.confidence")
+DEFAULT_ABSTENTION_THRESHOLD = _confidence.DEFAULT_ABSTENTION_THRESHOLD
+get_abstention_threshold = _confidence.get_abstention_threshold
+get_top_score = _confidence.get_top_score
+has_sufficient_evidence = _confidence.has_sufficient_evidence
+has_valid_evidence_contract = _confidence.has_valid_evidence_contract
 
 
 def make_chunk(score, status="vigente"):

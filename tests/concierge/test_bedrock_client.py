@@ -1,18 +1,18 @@
 from unittest.mock import MagicMock, patch
+import importlib
 
 import pytest
 from botocore.exceptions import ClientError
 
-from src.concierge.bedrock_client import (
-    DEFAULT_MAX_TOKENS,
-    DEFAULT_MODEL_ID,
-    DEFAULT_REGION,
-    DEFAULT_TEMPERATURE,
-    DEFAULT_TOP_P,
-    create_bedrock_client,
-    generate_text,
-    get_bedrock_model_id,
-)
+bedrock_client = importlib.import_module("src.03_concierge.bedrock_client")
+DEFAULT_MAX_TOKENS = bedrock_client.DEFAULT_MAX_TOKENS
+DEFAULT_MODEL_ID = bedrock_client.DEFAULT_MODEL_ID
+DEFAULT_REGION = bedrock_client.DEFAULT_REGION
+DEFAULT_TEMPERATURE = bedrock_client.DEFAULT_TEMPERATURE
+DEFAULT_TOP_P = bedrock_client.DEFAULT_TOP_P
+create_bedrock_client = bedrock_client.create_bedrock_client
+generate_text = bedrock_client.generate_text
+get_bedrock_model_id = bedrock_client.get_bedrock_model_id
 
 
 @pytest.fixture(autouse=True)
@@ -59,8 +59,8 @@ def test_create_client_uses_default_region_and_runtime_service():
     fake_client = MagicMock()
     fake_session.client.return_value = fake_client
 
-    with patch(
-        "src.concierge.bedrock_client.boto3.Session",
+    with patch.object(
+        bedrock_client.boto3, "Session",
         return_value=fake_session,
     ) as session_class:
         client = create_bedrock_client()
@@ -73,8 +73,8 @@ def test_create_client_uses_default_region_and_runtime_service():
 def test_create_client_uses_environment_region(monkeypatch):
     monkeypatch.setenv("AWS_REGION", "sa-east-1")
 
-    with patch(
-        "src.concierge.bedrock_client.boto3.Session"
+    with patch.object(
+        bedrock_client.boto3, "Session"
     ) as session_class:
         create_bedrock_client()
 
@@ -88,8 +88,8 @@ def test_empty_environment_region_raises_value_error(
 ):
     monkeypatch.setenv("AWS_REGION", region)
 
-    with patch(
-        "src.concierge.bedrock_client.boto3.Session"
+    with patch.object(
+        bedrock_client.boto3, "Session"
     ) as session_class:
         with pytest.raises(ValueError, match="AWS_REGION"):
             create_bedrock_client()
@@ -101,8 +101,8 @@ def test_create_client_uses_profile_and_region(monkeypatch):
     monkeypatch.setenv("AWS_PROFILE", "conectatel")
     monkeypatch.setenv("AWS_REGION", "us-west-2")
 
-    with patch(
-        "src.concierge.bedrock_client.boto3.Session"
+    with patch.object(
+        bedrock_client.boto3, "Session"
     ) as session_class:
         create_bedrock_client()
 
@@ -167,8 +167,8 @@ def test_generate_text_creates_client_when_not_injected():
     client = MagicMock()
     client.converse.return_value = bedrock_response({"text": "Resposta"})
 
-    with patch(
-        "src.concierge.bedrock_client.create_bedrock_client",
+    with patch.object(
+        bedrock_client, "create_bedrock_client",
         return_value=client,
     ) as create_client:
         result = generate_text("Sistema", "Usuário")
@@ -181,8 +181,8 @@ def test_generate_text_does_not_create_client_when_injected():
     client = MagicMock()
     client.converse.return_value = bedrock_response({"text": "Resposta"})
 
-    with patch(
-        "src.concierge.bedrock_client.create_bedrock_client"
+    with patch.object(
+        bedrock_client, "create_bedrock_client"
     ) as create_client:
         generate_text("Sistema", "Usuário", client=client)
 

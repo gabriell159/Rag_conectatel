@@ -1,9 +1,9 @@
-from src.concierge.bedrock_client import generate_text
-from src.concierge.confidence import (
+from .bedrock_client import generate_text
+from .confidence import (
     get_top_score,
     has_sufficient_evidence,
 )
-from src.concierge.prompts import SYSTEM_PROMPT, build_user_prompt
+from .prompts import SYSTEM_PROMPT, build_user_prompt
 
 
 def answer_question(

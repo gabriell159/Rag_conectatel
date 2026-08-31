@@ -1,39 +1,1226 @@
 [
-  {"id":"reembolso_prazo","question":"Qual e o prazo para pedir reembolso?","expected_decision":"ANSWER","expected_source":"corpus/politicas/politica_reembolso_v2.md","forbidden_source":"corpus/politicas/politica_reembolso_v1.md"},
-  {"id":"contestacao_prazo","question":"Por quanto tempo posso contestar uma cobranca na fatura?","expected_decision":"ANSWER","expected_source":"corpus/politicas/politica_reembolso_v2.md","forbidden_source":"corpus/politicas/politica_reembolso_v1.md"},
-  {"id":"contestacao_forma","question":"Posso receber o reembolso em conta corrente?","expected_decision":"ANSWER","expected_source":"corpus/politicas/politica_reembolso_v2.md","forbidden_source":"corpus/politicas/politica_reembolso_v1.md"},
-  {"id":"contestacao_analise","question":"Qual e o prazo de analise de uma contestacao?","expected_decision":"ANSWER","expected_source":"corpus/politicas/politica_reembolso_v2.md","forbidden_source":"corpus/politicas/politica_reembolso_v1.md"},
-  {"id":"consumo_dados","question":"Como consulto meu consumo de dados?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_geral.md"},
-  {"id":"segunda_via","question":"Como emito a segunda via da minha fatura?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_geral.md"},
-  {"id":"pagamento","question":"Quais formas de pagamento a ConectaTel aceita?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_geral.md"},
-  {"id":"dados_cadastrais","question":"Como altero meu endereco cadastral?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_geral.md"},
-  {"id":"aplicativo","question":"Existe aplicativo para gerenciar minha linha?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_geral.md"},
-  {"id":"debito_automatico","question":"Como funciona o debito automatico?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_geral.md"},
-  {"id":"canais_atendimento","question":"Quais sao os canais de atendimento?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_geral.md"},
-  {"id":"plano_basico_franquia","question":"Quantos GB tem o Conecta Basico?","expected_decision":"ANSWER","expected_source":"corpus/planos/plano_conecta_basico.md"},
-  {"id":"plano_basico_valor","question":"Qual o valor mensal do Conecta Basico?","expected_decision":"ANSWER","expected_source":"corpus/planos/plano_conecta_basico.md"},
-  {"id":"plano_basico_migracao","question":"Posso migrar do Conecta Basico para outro plano?","expected_decision":"ANSWER","expected_source":"corpus/planos/plano_conecta_basico.md"},
-  {"id":"plano_plus_franquia","question":"Quantos GB possui o Conecta Plus?","expected_decision":"ANSWER","expected_source":"corpus/planos/plano_conecta_plus.md"},
-  {"id":"plano_plus_fidelidade","question":"O Conecta Plus tem fidelidade?","expected_decision":"ANSWER","expected_source":"corpus/planos/plano_conecta_plus.md"},
-  {"id":"plano_familia_linhas","question":"Quantas linhas posso agrupar no Conecta Familia?","expected_decision":"ANSWER","expected_source":"corpus/planos/plano_conecta_familia.md"},
-  {"id":"plano_familia_valor","question":"Qual o valor do Conecta Familia com duas linhas?","expected_decision":"ANSWER","expected_source":"corpus/planos/plano_conecta_familia.md"},
-  {"id":"cobertura_4g_5g","question":"Como verifico se minha regiao tem cobertura 4G ou 5G?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_cobertura_rede.md"},
-  {"id":"sinal_instavel","question":"O que devo fazer quando o sinal esta instavel?","expected_decision":"ANSWER","expected_source":"corpus/faq/faq_cobertura_rede.md"},
-  {"id":"portabilidade_entrada","question":"Qual o prazo para concluir uma portabilidade de entrada?","expected_decision":"ANSWER","expected_source":"corpus/procedimentos/procedimento_portabilidade.md"},
-  {"id":"troca_chip","question":"Como solicito um novo chip fisico?","expected_decision":"ANSWER","expected_source":"corpus/procedimentos/procedimento_troca_chip_esim.md"},
-  {"id":"ativacao_esim","question":"Como ativo um eSIM?","expected_decision":"ANSWER","expected_source":"corpus/procedimentos/procedimento_troca_chip_esim.md"},
-  {"id":"desbloqueio_aparelho","question":"Como desbloqueio um aparelho comprado com subsidio?","expected_decision":"ANSWER","expected_source":"corpus/procedimentos/procedimento_desbloqueio_aparelho.md"},
-  {"id":"cancelamento_sem_fidelidade","question":"Posso cancelar sem multa se nao tenho fidelidade?","expected_decision":"ANSWER","expected_source":"corpus/politicas/politica_cancelamento.md"},
-  {"id":"cancelamento_multa","question":"Como e calculada a multa de cancelamento durante a fidelidade?","expected_decision":"ANSWER","expected_source":"corpus/politicas/politica_cancelamento.md"},
-  {"id":"fraude","question":"Acho que fizeram uma fraude usando minha linha.","expected_decision":"ESCALATE","expected_handoff_fields":["reason","summary","requested_action","priority"]},
-  {"id":"contestacao_alta","question":"Quero contestar uma cobranca de R$ 700,00.","expected_decision":"ESCALATE","expected_handoff_fields":["reason","summary","requested_action","priority"]},
-  {"id":"multa_contestada","question":"Nao concordo com a multa de fidelidade do cancelamento.","expected_decision":"ESCALATE","expected_handoff_fields":["reason","summary","requested_action","priority"]},
-  {"id":"falecimento_titular","question":"Preciso alterar a titularidade porque o titular faleceu.","expected_decision":"ESCALATE","expected_handoff_fields":["reason","summary","requested_action","priority"]},
-  {"id":"reclamacao_anatel","question":"Ja abri uma reclamacao na Anatel e quero ajuda.","expected_decision":"ESCALATE","expected_handoff_fields":["reason","summary","requested_action","priority"]},
-  {"id":"visita_tecnica","question":"Preciso de uma visita tecnica para reparar a infraestrutura.","expected_decision":"ESCALATE","expected_handoff_fields":["reason","summary","requested_action","priority"]},
-  {"id":"fora_corpus_tempo","question":"Qual sera a previsao do tempo amanha?","expected_decision":"NO_ANSWER"},
-  {"id":"fora_corpus_futebol","question":"Quem vencera o campeonato de futebol?","expected_decision":"NO_ANSWER"},
-  {"id":"fora_corpus_investimento","question":"Qual investimento devo fazer este mes?","expected_decision":"NO_ANSWER"},
-  {"id":"fora_corpus_endereco","question":"Qual e o endereco de uma loja que nao esta no cadastro?","expected_decision":"NO_ANSWER"},
-  {"id":"fora_corpus_senha","question":"Qual e a minha senha bancaria?","expected_decision":"NO_ANSWER"}
+  {
+    "id": "reembolso_prazo",
+    "question": "Qual e o prazo para pedir reembolso?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "forbidden_source": "corpus/politicas/politica_reembolso_v1.md"
+  },
+  {
+    "id": "contestacao_prazo",
+    "question": "Por quanto tempo posso contestar uma cobranca na fatura?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "forbidden_source": "corpus/politicas/politica_reembolso_v1.md"
+  },
+  {
+    "id": "contestacao_forma",
+    "question": "Posso receber o reembolso em conta corrente?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "forbidden_source": "corpus/politicas/politica_reembolso_v1.md"
+  },
+  {
+    "id": "contestacao_analise",
+    "question": "Qual e o prazo de analise de uma contestacao?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "forbidden_source": "corpus/politicas/politica_reembolso_v1.md"
+  },
+  {
+    "id": "consumo_dados",
+    "question": "Como consulto meu consumo de dados?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "segunda_via",
+    "question": "Como emito a segunda via da minha fatura?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "pagamento",
+    "question": "Quais formas de pagamento a ConectaTel aceita?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "dados_cadastrais",
+    "question": "Como altero meu endereco cadastral?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "aplicativo",
+    "question": "Existe aplicativo para gerenciar minha linha?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "debito_automatico",
+    "question": "Como funciona o debito automatico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "canais_atendimento",
+    "question": "Quais sao os canais de atendimento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "plano_basico_franquia",
+    "question": "Quantos GB tem o Conecta Basico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "plano_basico_valor",
+    "question": "Qual o valor mensal do Conecta Basico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "plano_basico_migracao",
+    "question": "Posso migrar do Conecta Basico para outro plano?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "plano_plus_franquia",
+    "question": "Quantos GB possui o Conecta Plus?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "plano_plus_fidelidade",
+    "question": "O Conecta Plus tem fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "plano_familia_linhas",
+    "question": "Quantas linhas posso agrupar no Conecta Familia?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "plano_familia_valor",
+    "question": "Qual o valor do Conecta Familia com duas linhas?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "cobertura_4g_5g",
+    "question": "Como verifico se minha regiao tem cobertura 4G ou 5G?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "sinal_instavel",
+    "question": "O que devo fazer quando o sinal esta instavel?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "portabilidade_entrada",
+    "question": "Qual o prazo para concluir uma portabilidade de entrada?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "troca_chip",
+    "question": "Como solicito um novo chip fisico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "ativacao_esim",
+    "question": "Como ativo um eSIM?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "desbloqueio_aparelho",
+    "question": "Como desbloqueio um aparelho comprado com subsidio?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "cancelamento_sem_fidelidade",
+    "question": "Posso cancelar sem multa se nao tenho fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "cancelamento_multa",
+    "question": "Como e calculada a multa de cancelamento durante a fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "fraude",
+    "question": "Acho que fizeram uma fraude usando minha linha.",
+    "expected_decision": "ESCALATE",
+    "expected_handoff_fields": [
+      "reason",
+      "summary",
+      "requested_action",
+      "priority"
+    ]
+  },
+  {
+    "id": "contestacao_alta",
+    "question": "Quero contestar uma cobranca de R$ 700,00.",
+    "expected_decision": "ESCALATE",
+    "expected_handoff_fields": [
+      "reason",
+      "summary",
+      "requested_action",
+      "priority"
+    ]
+  },
+  {
+    "id": "multa_contestada",
+    "question": "Nao concordo com a multa de fidelidade do cancelamento.",
+    "expected_decision": "ESCALATE",
+    "expected_handoff_fields": [
+      "reason",
+      "summary",
+      "requested_action",
+      "priority"
+    ]
+  },
+  {
+    "id": "falecimento_titular",
+    "question": "Preciso alterar a titularidade porque o titular faleceu.",
+    "expected_decision": "ESCALATE",
+    "expected_handoff_fields": [
+      "reason",
+      "summary",
+      "requested_action",
+      "priority"
+    ]
+  },
+  {
+    "id": "reclamacao_anatel",
+    "question": "Ja abri uma reclamacao na Anatel e quero ajuda.",
+    "expected_decision": "ESCALATE",
+    "expected_handoff_fields": [
+      "reason",
+      "summary",
+      "requested_action",
+      "priority"
+    ]
+  },
+  {
+    "id": "visita_tecnica",
+    "question": "Preciso de uma visita tecnica para reparar a infraestrutura.",
+    "expected_decision": "ESCALATE",
+    "expected_handoff_fields": [
+      "reason",
+      "summary",
+      "requested_action",
+      "priority"
+    ]
+  },
+  {
+    "id": "fora_corpus_tempo",
+    "question": "Qual sera a previsao do tempo amanha?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_futebol",
+    "question": "Quem vencera o campeonato de futebol?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_investimento",
+    "question": "Qual investimento devo fazer este mes?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_endereco",
+    "question": "Qual e o endereco de uma loja que nao esta no cadastro?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_senha",
+    "question": "Qual e a minha senha bancaria?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "multa_informativa",
+    "question": "Como funciona a multa de cancelamento durante a fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "multa_sem_contestacao",
+    "question": "Existe multa se eu cancelar um plano sem fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "fraude_digitacao",
+    "question": "Acho que houve um golpe na minha linha, preciso de ajuda.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "tempo_ambigua",
+    "question": "me diga a previsão do tempo para amanhã",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_041",
+    "question": "Como consulto a cobertura 4G ou 5G pelo aplicativo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_042",
+    "question": "O que devo fazer se o sinal ficar instável?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_043",
+    "question": "Por que a internet pode ficar lenta em horário de pico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_044",
+    "question": "A ConectaTel oferece internet fixa com fibra?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_045",
+    "question": "Onde vejo a lista atualizada de bairros com 5G?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_046",
+    "question": "Quantos chamados técnicos permitem pedir cancelamento sem multa por queda de sinal?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_047",
+    "question": "Como verifico cobertura informando meu CEP?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_048",
+    "question": "Quais testes devo fazer antes de abrir chamado por lentidão?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_049",
+    "question": "O que verificar quando a região está em manutenção?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_050",
+    "question": "A rede 5G já cobre todas as cidades?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_051",
+    "question": "Quando devo abrir chamado técnico por sinal instável?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_cobertura_rede_052",
+    "question": "Quedas frequentes de sinal podem dispensar multa?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_faq_geral_053",
+    "question": "Como consulto meu consumo no aplicativo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_054",
+    "question": "Qual SMS gratuito consulto para ver o consumo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_055",
+    "question": "Onde solicito a segunda via da fatura?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_056",
+    "question": "Quais formas de pagamento são aceitas?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_057",
+    "question": "Como altero endereço, e-mail ou telefone cadastral?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_058",
+    "question": "Que confirmação é exigida para alterar meus dados?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_059",
+    "question": "O aplicativo ConectaTel funciona em Android e iOS?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_060",
+    "question": "Quais tarefas posso fazer no aplicativo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_061",
+    "question": "Como funciona o débito automático da fatura?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_062",
+    "question": "Posso cancelar o débito automático pelo aplicativo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_063",
+    "question": "Qual é o horário da central 0800 para suporte técnico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_faq_geral_064",
+    "question": "Onde encontro chat, telefone e lojas físicas?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_065",
+    "question": "Quantos GB de internet o Conecta Básico oferece?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_066",
+    "question": "Quantos minutos para outras operadoras estão incluídos?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_067",
+    "question": "As ligações ConectaTel são ilimitadas no Básico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_068",
+    "question": "O SMS para números ConectaTel é ilimitado?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_069",
+    "question": "Qual velocidade fica disponível após consumir os 8 GB?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_070",
+    "question": "Até quando dura a redução de velocidade do Básico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_071",
+    "question": "Posso contratar pacote adicional depois da franquia?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_072",
+    "question": "Qual é o valor mensal do Conecta Básico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_073",
+    "question": "O Conecta Básico exige fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_074",
+    "question": "Quais benefícios estão incluídos no Básico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_075",
+    "question": "Quantos GB de bônus existem nos três primeiros meses?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_basico_076",
+    "question": "Posso migrar do Básico para Plus ou Família sem custo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_077",
+    "question": "Quantas linhas podem ser agrupadas no Conecta Família?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_078",
+    "question": "Qual é a franquia compartilhada do Família?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_079",
+    "question": "Qual é o mínimo de linhas para contratar o Família?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_080",
+    "question": "Quantos GB cada linha adicional soma?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_081",
+    "question": "Como o titular define limite individual por linha?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_082",
+    "question": "Qual é o valor do Família com duas linhas?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_083",
+    "question": "Quanto custa cada linha adicional?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_084",
+    "question": "O Família possui fidelidade de quantos meses?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_085",
+    "question": "O aplicativo mostra o consumo de cada linha?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_086",
+    "question": "O plano Família oferece controle parental?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_087",
+    "question": "Quem pode adicionar ou remover linhas do grupo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_familia_088",
+    "question": "O que ocorre ao remover uma linha durante a fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_089",
+    "question": "Quantos GB de internet o Conecta Plus oferece?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_090",
+    "question": "Quantos GB são exclusivos para streaming de música?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_091",
+    "question": "As ligações do Plus são ilimitadas para qualquer operadora?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_092",
+    "question": "Qual velocidade fica disponível após consumir a franquia do Plus?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_093",
+    "question": "Posso contratar pacote adicional no Plus?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_094",
+    "question": "Qual é o valor mensal do Conecta Plus?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_095",
+    "question": "Quando o Plus tem fidelidade de 12 meses?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_096",
+    "question": "Há fidelidade no Plus ativado somente com chip ou eSIM?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_097",
+    "question": "Qual desconto existe no roteador Wi-Fi de bolso?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_098",
+    "question": "Qual é a permanência mínima do benefício do roteador?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_099",
+    "question": "Para quais planos posso migrar a partir do Plus?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_plano_conecta_plus_100",
+    "question": "O Plus dá prioridade no atendimento humano?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_101",
+    "question": "Posso cancelar sem multa quando não tenho fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_102",
+    "question": "Qual é a duração da fidelidade em plano com aparelho subsidiado?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_103",
+    "question": "Como é calculada a multa proporcional de cancelamento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_104",
+    "question": "O falecimento do titular dispensa a multa?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_105",
+    "question": "Mudança para região sem cobertura dispensa multa?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_106",
+    "question": "Quantos chamados técnicos são necessários para dispensar multa por defeito?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_107",
+    "question": "Quais passos fazem parte do processo de cancelamento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_108",
+    "question": "Em quanto tempo a linha é encerrada após confirmação?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_109",
+    "question": "O titular precisa confirmar a identidade para cancelar?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_110",
+    "question": "O cliente deve ser informado sobre eventual multa?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_111",
+    "question": "Como contestar uma multa de fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_cancelamento_112",
+    "question": "A contestação da multa deve ser encaminhada a um humano?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_politica_reembolso_v2_113",
+    "question": "Em quantos dias posso contestar um valor da fatura?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_114",
+    "question": "A partir de qual data começa o prazo de 90 dias?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_115",
+    "question": "Quais opções existem quando a contestação é aceita?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_116",
+    "question": "Posso receber o reembolso em conta corrente própria?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_117",
+    "question": "Quando uma contestação passa por verificação antifraude?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_118",
+    "question": "O que acontece com contestação de R$ 500 ou mais?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_119",
+    "question": "Qual é o prazo normal para análise da contestação?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_120",
+    "question": "Quanto tempo adicional a antifraude pode acrescentar?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_121",
+    "question": "Quais dados devem ser registrados numa contestação?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_122",
+    "question": "A política vigente é a versão 1 ou a versão 2?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_123",
+    "question": "Posso escolher crédito na próxima fatura?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_reembolso_v2_124",
+    "question": "É necessário confirmar os dados bancários para depósito?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md",
+    "expected_version": 2
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_125",
+    "question": "Quando uma suspeita de fraude deve ser escalada?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_126",
+    "question": "Uma cobrança de R$ 500 deve ser encaminhada a humano?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_127",
+    "question": "A contestação de multa de fidelidade exige escalonamento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_128",
+    "question": "Como tratar alteração de titularidade por falecimento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_129",
+    "question": "Uma reclamação na Anatel deve ser escalada?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_130",
+    "question": "Relato de assédio por atendente exige encaminhamento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_131",
+    "question": "Quando um problema técnico exige visita presencial?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_132",
+    "question": "O que fazer quando não há fonte suficiente para responder?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_133",
+    "question": "Quais campos mínimos devem constar no escalonamento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_134",
+    "question": "O registro deve conter o resumo do caso?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_135",
+    "question": "Como garantir qualidade no handoff para o atendente humano?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_politica_suporte_escalonamento_136",
+    "question": "Que informação de urgência deve acompanhar o escalonamento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_137",
+    "question": "Quando o procedimento de desbloqueio de aparelho se aplica?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_138",
+    "question": "O que deve ser confirmado sobre a identidade do titular?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_139",
+    "question": "Como verificar se a fidelidade do aparelho terminou?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_140",
+    "question": "Em quanto tempo o aplicativo gera o código de desbloqueio?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_141",
+    "question": "O desbloqueio após a fidelidade tem custo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_142",
+    "question": "Como funciona a quitação antecipada para desbloquear?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_143",
+    "question": "Como é calculado o valor residual do aparelho?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_144",
+    "question": "O cliente deve ser informado antes da quitação?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_145",
+    "question": "Como inserir o código de desbloqueio no aparelho?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_146",
+    "question": "O desbloqueio altera o plano ou a linha?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_147",
+    "question": "Aparelho comprado fora da ConectaTel entra no procedimento?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_desbloqueio_aparelho_148",
+    "question": "Quem orienta o desbloqueio de aparelho sem subsídio?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_149",
+    "question": "Quais dados são necessários para portabilidade de entrada?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_150",
+    "question": "Qual é o prazo padrão da portabilidade de entrada?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_151",
+    "question": "Devo manter o chip da operadora antiga ativo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_152",
+    "question": "Quando o número passa a funcionar no chip ConectaTel?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_153",
+    "question": "Quem inicia a portabilidade de saída?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_154",
+    "question": "A ConectaTel precisa executar alguma ação na portabilidade de saída?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_155",
+    "question": "A fidelidade impede a portabilidade de saída?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_156",
+    "question": "O que ocorre se a portabilidade passar de 3 dias úteis?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_157",
+    "question": "Divergência cadastral pode impedir a portabilidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_158",
+    "question": "Como registrar o pedido de portabilidade no sistema?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_159",
+    "question": "Qual plano devo informar na portabilidade de entrada?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_portabilidade_160",
+    "question": "Quando um caso de portabilidade deve ser escalado?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_161",
+    "question": "Quando devo solicitar troca de chip físico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_162",
+    "question": "Como confirmar a identidade para pedir novo chip?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_163",
+    "question": "Em quanto tempo o novo chip chega pelo aplicativo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_164",
+    "question": "Posso retirar o chip diretamente em uma loja?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_165",
+    "question": "Quando o chip antigo é desativado?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_166",
+    "question": "Devo descartar o chip antigo antes da confirmação?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_167",
+    "question": "Como verificar se o aparelho é compatível com eSIM?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_168",
+    "question": "Por quanto tempo o QR Code do eSIM é válido?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_169",
+    "question": "Onde escaneio o QR Code de ativação?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_170",
+    "question": "Como confirmar a ativação da linha no aplicativo?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_171",
+    "question": "A troca de chip gera custo para o titular?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_procedimento_troca_chip_esim_172",
+    "question": "O que fazer em caso de suspeita de SIM swap?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_extra_173",
+    "question": "Qual canal oficial informa se meu CEP tem cobertura?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_cobertura_rede.md"
+  },
+  {
+    "id": "doc_extra_174",
+    "question": "Como confirmo uma alteração de dados cadastrais?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "doc_extra_175",
+    "question": "Qual é a franquia de dados do plano Conecta Básico?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_basico.md"
+  },
+  {
+    "id": "doc_extra_176",
+    "question": "Como é compartilhada a franquia entre as linhas do Família?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_familia.md"
+  },
+  {
+    "id": "doc_extra_177",
+    "question": "Qual benefício de streaming está incluído no Conecta Plus?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/planos/plano_conecta_plus.md"
+  },
+  {
+    "id": "doc_extra_178",
+    "question": "Em que situação a multa de fidelidade pode ser dispensada?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_cancelamento.md"
+  },
+  {
+    "id": "doc_extra_179",
+    "question": "Qual documento define o prazo vigente de reembolso?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_reembolso_v2.md"
+  },
+  {
+    "id": "doc_extra_180",
+    "question": "Quais informações devem acompanhar um handoff para humano?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/politicas/politica_suporte_escalonamento.md"
+  },
+  {
+    "id": "doc_extra_181",
+    "question": "O desbloqueio é gratuito após o fim da fidelidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_desbloqueio_aparelho.md"
+  },
+  {
+    "id": "doc_extra_182",
+    "question": "Qual prazo a ConectaTel informa para concluir a portabilidade?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_portabilidade.md"
+  },
+  {
+    "id": "doc_extra_183",
+    "question": "Por quanto tempo posso usar o QR Code do eSIM?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/procedimentos/procedimento_troca_chip_esim.md"
+  },
+  {
+    "id": "doc_extra_184",
+    "question": "Quais canais de atendimento estão disponíveis para suporte?",
+    "expected_decision": "ANSWER",
+    "expected_source": "corpus/faq/faq_geral.md"
+  },
+  {
+    "id": "fora_corpus_clima_1",
+    "question": "Qual será a cotação do dólar hoje?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_saude_2",
+    "question": "Qual remédio devo tomar para dor de cabeça?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_noticia_3",
+    "question": "Quais são as notícias de hoje?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_receita_4",
+    "question": "Me passe uma receita de bolo de chocolate.",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_esporte_5",
+    "question": "Quem vai ganhar o próximo jogo?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "escalate_fraude_6",
+    "question": "Acredito que fizeram um golpe usando minha linha.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "escalate_tecnico_7",
+    "question": "Estou sem sinal há horas e preciso de atendimento.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "escalate_titularidade_8",
+    "question": "Preciso resolver a titularidade da linha com urgência.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "escalate_regulatorio_9",
+    "question": "Já reclamei na Anatel e preciso de ajuda.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "escalate_visita_10",
+    "question": "Preciso de uma visita técnica na minha residência.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "escalate_fraude_valor_11",
+    "question": "Quero contestar uma cobrança de R$ 800,00.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "escalate_fraude_urgente_12",
+    "question": "Detectei fraude e quero bloquear minha linha.",
+    "expected_decision": "ESCALATE"
+  },
+  {
+    "id": "fora_corpus_investimento_13",
+    "question": "Qual investimento devo fazer este mês?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_senha_14",
+    "question": "Qual é a minha senha bancária?",
+    "expected_decision": "NO_ANSWER"
+  },
+  {
+    "id": "fora_corpus_endereco_15",
+    "question": "Qual é o endereço de uma loja fora do cadastro?",
+    "expected_decision": "NO_ANSWER"
+  }
 ]

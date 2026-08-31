@@ -1,6 +1,7 @@
+import importlib
 import pytest
 
-from src.rag.retriever import buscar
+buscar = importlib.import_module("src.02_rag.07_retriever").buscar
 
 
 @pytest.mark.integration

@@ -16,7 +16,9 @@ def criar_sessao_boto3() -> boto3.Session:
     Em Lambda/AWS, utiliza automaticamente a IAM Role.
     """
 
-    profile = os.getenv("AWS_PROFILE")
+    # Perfil vazio (comum quando as credenciais vêm por variáveis de ambiente)
+    # deve seguir a cadeia padrão do boto3, sem tentar abrir um perfil "".
+    profile = (os.getenv("AWS_PROFILE") or "").strip() or None
 
     if profile:
         return boto3.Session(
@@ -24,6 +26,9 @@ def criar_sessao_boto3() -> boto3.Session:
             region_name=REGION,
         )
 
+    # Evita que um AWS_PROFILE vazio herdado do ambiente seja interpretado
+    # pelo botocore como o nome literal de um perfil.
+    os.environ.pop("AWS_PROFILE", None)
     return boto3.Session(
         region_name=REGION,
     )

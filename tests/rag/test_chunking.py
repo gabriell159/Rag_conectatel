@@ -1,5 +1,7 @@
-from src.rag.ingest import carregar_corpus
-from src.rag.chunking import gerar_chunks_corpus
+import importlib
+
+carregar_corpus = importlib.import_module("src.02_rag.01_ingest").carregar_corpus
+gerar_chunks_corpus = importlib.import_module("src.02_rag.03_chunking").gerar_chunks_corpus
 
 
 def test_chunking_corpus():

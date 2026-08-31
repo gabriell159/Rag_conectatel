@@ -1,9 +1,10 @@
 from pathlib import Path
 
-from src.rag.metadata import (
-    carregar_documento,
-    filter_vigentes,
-)
+import importlib
+
+metadata = importlib.import_module("src.02_rag.02_metadata")
+carregar_documento = metadata.carregar_documento
+filter_vigentes = metadata.filter_vigentes
 
 
 CAMINHO_POLITICAS = Path(

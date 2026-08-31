@@ -24,16 +24,27 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["source_file", "doc_family_id", "version_ordinal", "status"],
+        "required": ["source_file", "chunk_id", "score", "doc_family_id", "version_ordinal", "status"],
         "properties": {
           "source_file": {"type": "string"},
+          "chunk_id": {"type": "string"},
+          "score": {"type": "number"},
           "doc_family_id": {"type": "string"},
           "version_ordinal": {"type": "integer"},
           "status": {"const": "vigente"}
         }
       }
     },
-    "handoff": {"type": ["object", "null"]},
+    "handoff": {
+      "type": ["object", "null"],
+      "properties": {
+        "reason": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "requested_action": {"type": "string", "minLength": 1},
+        "priority": {"enum": ["baixa", "normal", "media", "alta"]}
+      },
+      "required": ["reason", "summary", "requested_action", "priority"]
+    },
     "component_versions": {"type": "object"}
   }
 }

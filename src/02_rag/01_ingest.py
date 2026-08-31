@@ -1,5 +1,7 @@
 from pathlib import Path
-from src.rag.metadata import carregar_documento
+import importlib
+
+carregar_documento = importlib.import_module("src.02_rag.02_metadata").carregar_documento
 
 CORPUS_PATH = Path("data/raw/conectatel-dados/corpus")
 
@@ -34,6 +36,9 @@ def carregar_corpus(corpus_path: Path = CORPUS_PATH) -> list[dict]:
     for arquivo in arquivos:
         documento = carregar_documento(arquivo)
         documento["metadata"]["category"] = arquivo.parent.name
+        documento["metadata"]["source"] = (
+            "corpus/" + arquivo.relative_to(corpus_path).as_posix()
+        )
         documentos.append(documento)
 
     return documentos

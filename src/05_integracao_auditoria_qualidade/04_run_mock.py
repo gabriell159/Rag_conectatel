@@ -6,7 +6,7 @@ import json
 from importlib import import_module
 
 
-run_mock = import_module(".03_mock_pipeline", __package__).run_mock
+run_mock = import_module(".03_offline_contract_mock", __package__).run_mock
 
 
 def main() -> int:

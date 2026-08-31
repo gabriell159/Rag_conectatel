@@ -10,15 +10,22 @@ from importlib import import_module
 AuditLogger = import_module(".02_audit", __package__).AuditLogger
 citation = import_module(".00_contract", __package__).citation
 new_trace_id = import_module(".01_trace", __package__).new_trace_id
+classify_handoff = import_module("src.03_concierge.05_orchestrator").classify_handoff
 
 
 def run_mock(question: str, audit_path=None) -> dict[str, Any]:
     started = time.perf_counter()
-    normalized = question.lower()
+    normalized = question.strip().casefold()
 
-    if "reembolso" in normalized:
+    handoff = classify_handoff(normalized)
+    if handoff:
+        decision = "ESCALATE"
+        answer = "Vou encaminhar seu caso para atendimento humano."
+        citations = []
+        reason = "caso exige atendimento humano"
+    elif "reembolso" in normalized:
         decision = "ANSWER"
-        answer = "A politica vigente permite solicitar reembolso em ate 7 dias corridos, conforme a politica citada."
+        answer = "A política vigente permite contestar valores da fatura em até 90 dias corridos."
         citations = [
             citation(
                 "corpus/politicas/politica_reembolso_v2.md",
@@ -28,17 +35,6 @@ def run_mock(question: str, audit_path=None) -> dict[str, Any]:
         ]
         handoff = None
         reason = None
-    elif any(term in normalized for term in ("sinal", "cobertura", "tecnico", "falha")):
-        decision = "ESCALATE"
-        answer = "Vou encaminhar seu caso para atendimento humano."
-        citations = []
-        handoff = {
-            "reason": "triagem_tecnica",
-            "summary": question,
-            "requested_action": "avaliar e resolver o problema tecnico informado",
-            "priority": "normal",
-        }
-        reason = "caso tecnico requer atendimento humano"
     else:
         decision = "NO_ANSWER"
         answer = "Nao sei responder com base no corpus oficial disponivel."
