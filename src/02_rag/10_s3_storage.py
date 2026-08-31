@@ -10,7 +10,9 @@ REGION = os.getenv("AWS_REGION", "us-east-1")
 BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 S3_PREFIX = os.getenv("S3_PREFIX", "conectatel").strip(" /")
 
-LOCAL_VECTORSTORE = BASE_DIR / "data" / "processed" / "vectorstore"
+LOCAL_VECTORSTORE = Path(
+    os.getenv("RAG_VECTORSTORE_PATH", str(BASE_DIR / "data" / "processed" / "vectorstore"))
+)
 
 
 def criar_cliente_s3():
@@ -149,6 +151,16 @@ def download_vectorstore() -> None:
         "metadata/metadata.json",
         LOCAL_VECTORSTORE / "metadata.json",
     )
+
+    # O manifesto é opcional por compatibilidade com artefatos legados, mas a
+    # Lambda o utiliza para validar versão e integridade do índice baixado.
+    try:
+        download_arquivo(
+            "vectorstore/manifest.json",
+            LOCAL_VECTORSTORE / "manifest.json",
+        )
+    except RuntimeError:
+        pass
 
     print("Vector store recuperado do S3 com sucesso.")
 

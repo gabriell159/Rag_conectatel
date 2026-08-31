@@ -3,7 +3,15 @@ from .confidence import (
     get_top_score,
     has_sufficient_evidence,
 )
-from .prompts import SYSTEM_PROMPT, build_user_prompt
+from .prompts import (
+    GROUNDED_RETRY_SYSTEM_PROMPT,
+    SYSTEM_PROMPT,
+    build_grounded_retry_prompt,
+    build_user_prompt,
+)
+
+
+GROUNDED_RETRY_THRESHOLD = 0.30
 
 
 def answer_question(
@@ -30,6 +38,14 @@ def answer_question(
 
     user_prompt = build_user_prompt(normalized_question, chunks)
     generated_answer = generate_text(SYSTEM_PROMPT, user_prompt)
+
+    if (
+        generated_answer == "NO_ANSWER"
+        and retrieval_score is not None
+        and retrieval_score >= GROUNDED_RETRY_THRESHOLD
+    ):
+        retry_prompt = build_grounded_retry_prompt(normalized_question, chunks)
+        generated_answer = generate_text(GROUNDED_RETRY_SYSTEM_PROMPT, retry_prompt)
 
     if generated_answer == "NO_ANSWER":
         return {

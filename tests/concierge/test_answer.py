@@ -170,7 +170,7 @@ def test_recoverable_calibration_score_calls_model_once():
     generate_text.assert_called_once()
 
 
-def test_exact_model_no_answer_remains_no_answer_without_sources():
+def test_exact_model_no_answer_retries_with_grounded_context_then_abstains():
     chunks = [make_chunk(score=0.75)]
 
     with patch.object(
@@ -186,7 +186,7 @@ def test_exact_model_no_answer_remains_no_answer_without_sources():
         "sources": [],
         "retrieval_score": 0.75,
     }
-    generate_text.assert_called_once()
+    assert generate_text.call_count == 2
 
 
 def test_non_exact_no_answer_text_is_not_reinterpreted():

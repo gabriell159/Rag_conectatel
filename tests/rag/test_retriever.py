@@ -2,6 +2,14 @@ import importlib
 import pytest
 
 buscar = importlib.import_module("src.02_rag.07_retriever").buscar
+retriever_module = importlib.import_module("src.02_rag.07_retriever")
+
+
+def test_bonus_documental_prioriza_portabilidade_por_termos_distintivos():
+    question = "Devo manter o chip da operadora de origem ativo?"
+    portabilidade = retriever_module._document_hint_bonus(question, "procedimento_portabilidade.md")
+    troca_chip = retriever_module._document_hint_bonus(question, "procedimento_troca_chip_esim.md")
+    assert portabilidade > troca_chip > 0
 
 
 @pytest.mark.integration

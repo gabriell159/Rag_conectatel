@@ -16,6 +16,20 @@ class ConciergeIntegratedTests(unittest.TestCase):
             )
         )
 
+    def test_pergunta_sobre_regra_de_fraude_nao_escalona(self):
+        self.assertIsNone(
+            orchestrator.classify_handoff(
+                "Quando uma suspeita de fraude deve ser escalada?"
+            )
+        )
+
+    def test_relato_real_de_fraude_continua_escalonando(self):
+        handoff = orchestrator.classify_handoff(
+            "Acredito que fizeram fraude usando minha linha."
+        )
+        self.assertIsNotNone(handoff)
+        self.assertEqual(handoff["reason"], "suspeita de fraude")
+
     def test_valor_basico_com_evidencia_pode_ser_deterministico(self):
         chunks = [{
             "content": "O valor mensal do Conecta Basico e R$ 49,90.",

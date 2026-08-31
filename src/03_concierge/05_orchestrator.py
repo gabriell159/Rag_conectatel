@@ -23,6 +23,17 @@ def classify_handoff(question: str) -> dict[str, str] | None:
     """Aplica regras determinísticas para casos que exigem atendimento humano."""
 
     normalized = question.casefold()
+    informational_markers = (
+        "deve ser escalad", "deve ser encaminhad", "dispensa a multa",
+        "passa por verific", "antifraude pode acrescentar", "quais campos",
+        "que informacao de urgencia", "que informação de urgência",
+        "quando uma suspeita", "como tratar alteracao", "como tratar alteração",
+        "o que acontece com contest",
+    )
+    # Perguntas sobre uma regra publicada devem ser respondidas pelo corpus.
+    # Relatos ou pedidos de ação sobre um caso concreto continuam escalonados.
+    if any(marker in normalized for marker in informational_markers):
+        return None
     rules = [
         (("fraude", "golpe"), "suspeita de fraude", "alta"),
         (("anatel",), "reclamação regulatória", "alta"),
@@ -77,6 +88,20 @@ def _citations(chunks: list[dict]) -> list[dict[str, Any]]:
             "status": chunk.get("status", metadata.get("status")),
         })
     return citations
+
+
+def _retrieval_candidates(chunks: list[dict]) -> list[dict[str, Any]]:
+    """Audita os candidatos recuperados sem transformá-los em citações."""
+
+    return [
+        {
+            "source_file": chunk.get("metadata", {}).get("source", chunk.get("document", "")),
+            "chunk_id": chunk.get("chunk_id", ""),
+            "score": float(chunk.get("score") or 0.0),
+            "status": chunk.get("status", chunk.get("metadata", {}).get("status")),
+        }
+        for chunk in chunks
+    ]
 
 
 def _deterministic_answer(question: str, chunks: list[dict]) -> str | None:
@@ -136,6 +161,7 @@ def run_question(question: str, audit_path: Path | None = None) -> dict[str, Any
         "retrieval": {
             "best_score": max((chunk.get("score", 0) for chunk in chunks), default=None),
             "threshold": threshold,
+            "candidates": _retrieval_candidates(chunks),
         },
         "component_versions": {"concierge": "03-concierge-v1", "pipeline": "integrated"},
     }

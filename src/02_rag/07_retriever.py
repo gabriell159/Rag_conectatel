@@ -13,7 +13,9 @@ gerar_embedding = importlib.import_module("src.02_rag.04_embeddings").gerar_embe
 download_vectorstore = importlib.import_module("src.02_rag.10_s3_storage").download_vectorstore
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-VECTORSTORE_PATH = BASE_DIR / "data" / "processed" / "vectorstore"
+VECTORSTORE_PATH = Path(
+    os.getenv("RAG_VECTORSTORE_PATH", str(BASE_DIR / "data" / "processed" / "vectorstore"))
+)
 BACKUP_VECTORSTORE_PATH = BASE_DIR / "data" / "processed" / "vectorstore_backup"
 INDEX_PATH = VECTORSTORE_PATH / "index.faiss"
 METADATA_PATH = VECTORSTORE_PATH / "metadata.json"
@@ -112,6 +114,22 @@ def _lexical_overlap(pergunta: str, conteudo: str) -> float:
     return len(query & content) / len(query) if query else 0.0
 
 
+def _document_hint_bonus(pergunta: str, source: str) -> float:
+    """Favorece procedimentos quando a consulta contém termos distintivos."""
+
+    query = _tokens(pergunta)
+    source_name = source.casefold()
+    hints = {
+        "portabilidade": (0.16, {"portabilidade", "operadora", "origem", "destino", "portado", "portar"}),
+        "troca_chip_esim": (0.08, {"esim", "chip", "qr", "sim", "swap"}),
+        "desbloqueio": (0.12, {"desbloqueio", "desbloquear", "aparelho", "codigo"}),
+    }
+    for document_hint, (bonus, terms) in hints.items():
+        if document_hint in source_name and query & terms:
+            return bonus
+    return 0.0
+
+
 def buscar(
     pergunta: str,
     top_k: int = 3,
@@ -179,7 +197,7 @@ def buscar(
         registro = registros[indice_original]
         score_final = float(score) + 0.15 * _lexical_overlap(
             pergunta, registro["content"]
-        )
+        ) + _document_hint_bonus(pergunta, registro["metadata"]["source"])
         candidatos.append((score_final, registro))
 
     candidatos.sort(key=lambda item: item[0], reverse=True)

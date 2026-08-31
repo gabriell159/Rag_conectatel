@@ -1,48 +1,19 @@
 {
-  "run_at": "2026-08-31T14:01:15.185506+00:00",
+  "run_at": "2026-08-31T16:52:04.204415+00:00",
   "total": 200,
-  "decision_accuracy": 0.815,
-  "source_accuracy": 0.815,
-  "version_accuracy": 0.985,
+  "decision_accuracy": 0.97,
+  "source_accuracy": 0.955,
+  "version_accuracy": 1.0,
   "failed": [
-    "doc_faq_cobertura_rede_050",
     "doc_faq_geral_060",
-    "doc_plano_conecta_basico_069",
     "doc_plano_conecta_basico_072",
-    "doc_plano_conecta_basico_073",
-    "doc_plano_conecta_familia_079",
     "doc_plano_conecta_familia_084",
     "doc_plano_conecta_familia_086",
-    "doc_plano_conecta_plus_093",
-    "doc_politica_cancelamento_104",
-    "doc_politica_cancelamento_110",
-    "doc_politica_reembolso_v2_117",
-    "doc_politica_reembolso_v2_118",
-    "doc_politica_reembolso_v2_120",
-    "doc_politica_suporte_escalonamento_125",
-    "doc_politica_suporte_escalonamento_126",
-    "doc_politica_suporte_escalonamento_128",
-    "doc_politica_suporte_escalonamento_129",
-    "doc_politica_suporte_escalonamento_132",
-    "doc_politica_suporte_escalonamento_136",
     "doc_procedimento_desbloqueio_aparelho_138",
-    "doc_procedimento_desbloqueio_aparelho_143",
     "doc_procedimento_desbloqueio_aparelho_144",
-    "doc_procedimento_desbloqueio_aparelho_145",
-    "doc_procedimento_desbloqueio_aparelho_147",
-    "doc_procedimento_desbloqueio_aparelho_148",
-    "doc_procedimento_portabilidade_151",
-    "doc_procedimento_portabilidade_152",
-    "doc_procedimento_troca_chip_esim_163",
-    "doc_variacao_002",
-    "doc_variacao_005",
-    "doc_variacao_008",
-    "doc_variacao_009",
-    "doc_variacao_010",
-    "doc_variacao_011",
-    "doc_variacao_012",
-    "doc_variacao_013",
-    "escalate_tecnico_7"
+    "doc_procedimento_portabilidade_154",
+    "doc_extra_175",
+    "doc_extra_179"
   ],
   "results": [
     {
@@ -397,9 +368,9 @@
     },
     {
       "id": "doc_faq_cobertura_rede_050",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -530,9 +501,9 @@
     },
     {
       "id": "doc_plano_conecta_basico_069",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -558,9 +529,9 @@
     },
     {
       "id": "doc_plano_conecta_basico_073",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -600,9 +571,9 @@
     },
     {
       "id": "doc_plano_conecta_familia_079",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -635,8 +606,8 @@
     },
     {
       "id": "doc_plano_conecta_familia_084",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
       "source_ok": false,
       "version_ok": true
     },
@@ -698,9 +669,9 @@
     },
     {
       "id": "doc_plano_conecta_plus_093",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -775,9 +746,9 @@
     },
     {
       "id": "doc_politica_cancelamento_104",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -817,9 +788,9 @@
     },
     {
       "id": "doc_politica_cancelamento_110",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -866,17 +837,17 @@
     },
     {
       "id": "doc_politica_reembolso_v2_117",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
-      "version_ok": false
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
+      "version_ok": true
     },
     {
       "id": "doc_politica_reembolso_v2_118",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
-      "version_ok": false
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
+      "version_ok": true
     },
     {
       "id": "doc_politica_reembolso_v2_119",
@@ -887,10 +858,10 @@
     },
     {
       "id": "doc_politica_reembolso_v2_120",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
-      "version_ok": false
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
+      "version_ok": true
     },
     {
       "id": "doc_politica_reembolso_v2_121",
@@ -922,16 +893,16 @@
     },
     {
       "id": "doc_politica_suporte_escalonamento_125",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
       "id": "doc_politica_suporte_escalonamento_126",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -943,16 +914,16 @@
     },
     {
       "id": "doc_politica_suporte_escalonamento_128",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
       "id": "doc_politica_suporte_escalonamento_129",
-      "decision": "ESCALATE",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -971,9 +942,9 @@
     },
     {
       "id": "doc_politica_suporte_escalonamento_132",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -999,9 +970,9 @@
     },
     {
       "id": "doc_politica_suporte_escalonamento_136",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -1013,8 +984,8 @@
     },
     {
       "id": "doc_procedimento_desbloqueio_aparelho_138",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
       "source_ok": false,
       "version_ok": true
     },
@@ -1048,23 +1019,23 @@
     },
     {
       "id": "doc_procedimento_desbloqueio_aparelho_143",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
       "id": "doc_procedimento_desbloqueio_aparelho_144",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
       "source_ok": false,
       "version_ok": true
     },
     {
       "id": "doc_procedimento_desbloqueio_aparelho_145",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -1076,16 +1047,16 @@
     },
     {
       "id": "doc_procedimento_desbloqueio_aparelho_147",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
       "id": "doc_procedimento_desbloqueio_aparelho_148",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -1106,14 +1077,14 @@
       "id": "doc_procedimento_portabilidade_151",
       "decision": "ANSWER",
       "decision_ok": true,
-      "source_ok": false,
+      "source_ok": true,
       "version_ok": true
     },
     {
       "id": "doc_procedimento_portabilidade_152",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -1125,9 +1096,9 @@
     },
     {
       "id": "doc_procedimento_portabilidade_154",
-      "decision": "ANSWER",
-      "decision_ok": true,
-      "source_ok": true,
+      "decision": "NO_ANSWER",
+      "decision_ok": false,
+      "source_ok": false,
       "version_ok": true
     },
     {
@@ -1188,9 +1159,9 @@
     },
     {
       "id": "doc_procedimento_troca_chip_esim_163",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -1257,87 +1228,87 @@
       "version_ok": true
     },
     {
-      "id": "doc_variacao_002",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
-      "version_ok": true
-    },
-    {
-      "id": "doc_variacao_003",
+      "id": "doc_extra_173",
       "decision": "ANSWER",
       "decision_ok": true,
       "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_004",
+      "id": "doc_extra_174",
       "decision": "ANSWER",
       "decision_ok": true,
       "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_005",
+      "id": "doc_extra_175",
       "decision": "NO_ANSWER",
       "decision_ok": false,
       "source_ok": false,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_006",
+      "id": "doc_extra_176",
       "decision": "ANSWER",
       "decision_ok": true,
       "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_007",
+      "id": "doc_extra_177",
       "decision": "ANSWER",
       "decision_ok": true,
       "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_008",
+      "id": "doc_extra_178",
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
+      "version_ok": true
+    },
+    {
+      "id": "doc_extra_179",
       "decision": "NO_ANSWER",
       "decision_ok": false,
       "source_ok": false,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_009",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "id": "doc_extra_180",
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_010",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "id": "doc_extra_181",
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_011",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "id": "doc_extra_182",
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_012",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "id": "doc_extra_183",
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
-      "id": "doc_variacao_013",
-      "decision": "NO_ANSWER",
-      "decision_ok": false,
-      "source_ok": false,
+      "id": "doc_extra_184",
+      "decision": "ANSWER",
+      "decision_ok": true,
+      "source_ok": true,
       "version_ok": true
     },
     {
@@ -1384,8 +1355,8 @@
     },
     {
       "id": "escalate_tecnico_7",
-      "decision": "ANSWER",
-      "decision_ok": false,
+      "decision": "ESCALATE",
+      "decision_ok": true,
       "source_ok": true,
       "version_ok": true
     },
