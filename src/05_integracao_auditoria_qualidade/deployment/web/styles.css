@@ -1,0 +1,12 @@
+:root { color-scheme: dark; font-family: Inter, Arial, sans-serif; background: #08131f; color: #eaf2fb; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; }
+.container { width: min(720px, calc(100% - 32px)); padding: 42px; border: 1px solid #29425b; border-radius: 18px; background: #102132; box-shadow: 0 18px 50px #0006; }
+.eyebrow { color: #62c6ff; font-size: .78rem; letter-spacing: .12em; font-weight: 700; }
+h1 { margin: 0; font-size: 2.1rem; } .intro { color: #b8c9d9; }
+label, textarea { display: block; width: 100%; } label { margin: 26px 0 8px; font-weight: 700; }
+textarea { min-height: 110px; resize: vertical; padding: 14px; border: 1px solid #42617d; border-radius: 10px; background: #091724; color: inherit; font: inherit; }
+button { margin-top: 14px; padding: 12px 20px; border: 0; border-radius: 9px; background: #37a9e8; color: #04111c; font-weight: 800; cursor: pointer; } button:disabled { opacity: .6; cursor: wait; }
+.result { margin-top: 28px; padding: 22px; border-radius: 12px; background: #0a1825; border-left: 4px solid #62c6ff; }.hidden { display: none; }.error { border-color: #ef6b73; }.offline { border-color: #ffbf5e; }.ESCALATE { border-color: #ffbf5e; }.NO_ANSWER { border-color: #b9c3cf; }
+.badge { display: inline-block; padding: 4px 9px; border-radius: 99px; background: #1c536f; font-size: .75rem; font-weight: 800; }.ESCALATE .badge { background: #825915; }.NO_ANSWER .badge { background: #53616f; }
+.trace { margin-top: 20px; color: #8ea8bd; font-family: monospace; font-size: .85rem; word-break: break-all; } li { margin: 8px 0; }

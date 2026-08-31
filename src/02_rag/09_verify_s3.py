@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 
 EXPECTED_OBJECTS = (
     "vectorstore/index.faiss",
-    "metadata/metadata.json",
-    "vectorstore/manifest.json",
+    "vectorstore/metadata.json",
 )
 
 

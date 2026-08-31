@@ -1,0 +1,12 @@
+version: 1
+applications:
+  - appRoot: src/05_integracao_auditoria_qualidade/deployment/web
+    frontend:
+      phases:
+        build:
+          commands:
+            - echo "Publicando interface estática do Concierge"
+      artifacts:
+        baseDirectory: .
+        files:
+          - "**/*"

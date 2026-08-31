@@ -97,7 +97,7 @@ def upload_vectorstore() -> None:
 
     upload_arquivo(
         LOCAL_VECTORSTORE / "metadata.json",
-        "metadata/metadata.json",
+        "vectorstore/metadata.json",
     )
 
     manifest = LOCAL_VECTORSTORE / "manifest.json"
@@ -148,7 +148,7 @@ def download_vectorstore() -> None:
     )
 
     download_arquivo(
-        "metadata/metadata.json",
+        "vectorstore/metadata.json",
         LOCAL_VECTORSTORE / "metadata.json",
     )
 

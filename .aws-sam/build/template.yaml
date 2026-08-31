@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: "API interna de demonstra\xE7\xE3o do Concierge ConectaTel."
+Parameters:
+  RagBucketName:
+    Type: String
+    Description: "Bucket que cont\xE9m o vector store oficial."
+  AuditBucketName:
+    Type: String
+    Description: "Bucket que receber\xE1 os eventos de auditoria."
+  S3Prefix:
+    Type: String
+    Default: conectatel
+  AllowedOrigin:
+    Type: String
+    Default: '*'
+    Description: URL do Amplify autorizada a chamar a API.
+  BedrockModelId:
+    Type: String
+    Default: mistral.mistral-large-3-675b-instruct
+Resources:
+  DemoEnabledParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /conectatel/demo/enabled
+      Type: String
+      Value: 'false'
+      Description: "Liga ou desliga a demonstra\xE7\xE3o interna do Concierge."
+  ConciergeApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+        - Ref: AllowedOrigin
+        AllowMethods:
+        - POST
+        - OPTIONS
+        AllowHeaders:
+        - Content-Type
+  ConciergeFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      DockerContext: C:\Users\ArgilaFilho\Documents\Rag_conectatel
+      DockerTag: concierge-demo-v1
+      Dockerfile: src/05_integracao_auditoria_qualidade/deployment/lambda/Dockerfile
+      SamResourceId: ConciergeFunction
+    Properties:
+      PackageType: Image
+      MemorySize: 2048
+      Timeout: 60
+      EphemeralStorage:
+        Size: 1024
+      Environment:
+        Variables:
+          S3_BUCKET_NAME:
+            Ref: RagBucketName
+          S3_PREFIX:
+            Ref: S3Prefix
+          RAG_VECTORSTORE_PATH: /tmp/conectatel-vectorstore
+          RAG_VECTORSTORE_VERSION: v1
+          BEDROCK_MODEL_ID:
+            Ref: BedrockModelId
+          ABSTENTION_THRESHOLD: '0.30'
+          AUDIT_S3_BUCKET:
+            Ref: AuditBucketName
+          AUDIT_S3_PREFIX:
+            Fn::Sub: ${S3Prefix}/audit
+          AUDIT_LOG_PATH: /tmp/audit_log.jsonl
+          DEMO_ENABLED_PARAMETER:
+            Ref: DemoEnabledParameter
+          ALLOWED_ORIGIN:
+            Ref: AllowedOrigin
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - Statement:
+        - Effect: Allow
+          Action:
+          - s3:ListBucket
+          Resource:
+            Fn::Sub: arn:${AWS::Partition}:s3:::${RagBucketName}
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource:
+            Fn::Sub: arn:${AWS::Partition}:s3:::${RagBucketName}/${S3Prefix}/*
+        - Effect: Allow
+          Action:
+          - s3:PutObject
+          Resource:
+            Fn::Sub: arn:${AWS::Partition}:s3:::${AuditBucketName}/${S3Prefix}/audit/*
+        - Effect: Allow
+          Action:
+          - ssm:GetParameter
+          Resource:
+            Fn::GetAtt:
+            - DemoEnabledParameter
+            - Arn
+        - Effect: Allow
+          Action:
+          - bedrock:InvokeModel
+          Resource:
+            Fn::Sub: arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/*
+      Events:
+        Ask:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: ConciergeApi
+            Path: /ask
+            Method: POST
+      ImageUri: conciergefunction:concierge-demo-v1
+Outputs:
+  ApiUrl:
+    Description: URL POST da API para configurar na interface Amplify.
+    Value:
+      Fn::Sub: https://${ConciergeApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/ask
+  DemoEnabledParameterName:
+    Value:
+      Ref: DemoEnabledParameter

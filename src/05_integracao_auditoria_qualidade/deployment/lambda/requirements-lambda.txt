@@ -1,0 +1,7 @@
+# Dependências de execução da Lambda. Não reutilizamos requirements.txt porque
+# ele inclui ferramentas locais de análise e teste e o FAISS 1.15 não publica
+# wheel para o Linux usado pela imagem Lambda Python 3.11.
+boto3==1.43.82
+botocore==1.43.82
+faiss-cpu==1.8.0.post1
+numpy==1.26.4

@@ -17,8 +17,7 @@ def test_verify_uses_exact_retriever_object_paths():
 
     assert [item["key"] for item in result] == [
         "conectatel/vectorstore/index.faiss",
-        "conectatel/metadata/metadata.json",
-        "conectatel/vectorstore/manifest.json",
+        "conectatel/vectorstore/metadata.json",
     ]
     assert client.keys == [item["key"] for item in result]
 

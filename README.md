@@ -116,7 +116,7 @@ Artefatos locais em `data/processed/vectorstore/`:
 
 - `index.faiss`: embeddings Titan normalizados, 1024 dimensões.
 - `metadata.json`: conteúdo e metadados dos chunks.
-- `manifest.json`: versão, modelo, dimensão, quantidade e hash.
+- `manifest.json`: versão, modelo, dimensão, quantidade e hash (opcional para compatibilidade com artefatos legados).
 
 Verificar os objetos S3:
 
@@ -128,7 +128,8 @@ Com `S3_PREFIX=conectatel`:
 
 ```text
 s3://SEU_BUCKET/conectatel/vectorstore/index.faiss
-s3://SEU_BUCKET/conectatel/metadata/metadata.json
+s3://SEU_BUCKET/conectatel/vectorstore/metadata.json
+# opcional quando o pipeline o gerar:
 s3://SEU_BUCKET/conectatel/vectorstore/manifest.json
 ```
 
@@ -182,6 +183,13 @@ Gerar métricas:
 ```
 
 O contrato exige citações vigentes para `ANSWER`, nenhuma citação para `NO_ANSWER` e handoff completo para `ESCALATE`.
+
+### Demonstração interna na AWS
+
+A Frente 05 inclui um pacote opcional para publicar o Concierge como Lambda,
+API Gateway e interface estática no Amplify. A interface pode ser ligada ou
+desligada por parâmetro, sem remover a infraestrutura. Consulte o guia em
+[`docs/05_reflexao/deploy_interno.md`](docs/05_reflexao/deploy_interno.md).
 
 ## Golden set
 
