@@ -109,6 +109,128 @@ Como principal decisão de segurança, documentos revogados não participam da b
 
 ---
 
+### Ana Lícia Ferreira Soares
+
+- **Papel:** Frente 3 (Concierge / Bedrock)
+- **Responsabilidades:** Seleção e integração do modelo generativo no Amazon Bedrock, definição do limiar de confiança, grounding das respostas, retorno seguro de `NO_ANSWER` e estruturação determinística das fontes utilizadas.
+
+### Decisões de Desenvolvimento - Frente 3: Concierge / Bedrock
+
+### 1. Seleção do Modelo Generativo
+
+Foram comparados **Mistral Large 3**, **Amazon Nova Pro** e **Claude Haiku 4.5** no Amazon Bedrock Playground, utilizando o mesmo contexto, System Prompt e parâmetros.
+
+Os critérios considerados foram **qualidade, grounding, aderência ao `NO_ANSWER`, latência e custo**.
+
+| Modelo | `NO_ANSWER` estrito | Latência média | Custo aprox. dos 3 testes |
+|---|---|---:|---:|
+| **Mistral Large 3** | **Sim** | **494 ms** | **US$ 0,00109** |
+| Amazon Nova Pro | Parcial | 455 ms | ~US$ 0,00163 |
+| Claude Haiku 4.5 | Sim | 832 ms | ~US$ 0,00318 |
+
+O **Mistral Large 3** foi escolhido por apresentar o melhor equilíbrio entre qualidade, previsibilidade, baixa latência e custo. A implementação utiliza `mistral.mistral-large-3-675b-instruct`, na região `us-east-1`, através da API Converse do Amazon Bedrock Runtime.
+
+> **![Configuração da comparação](../../src/03_concierge/evidencias/Config_Testes_Modelos.png)**
+
+*Figura 1 - Configuração dos modelos para comparação.*
+
+> **![Teste 1 - Playground](../../src/03_concierge/evidencias/Teste2.png)**
+
+*Figura 2 - Comparação dos modelos avaliados para a Frente 3 (Teste 1).*
+
+> **![Teste 2 - Playground](../../src/03_concierge/evidencias/Teste5.png)**
+
+*Figura 3 - Comparação dos modelos avaliados para a Frente 3 (Teste 2).*
+
+> **![Teste 3 - Playground](../../src/03_concierge/evidencias/Teste7.png)**
+
+*Figura 4 - Comparação dos modelos avaliados para a Frente 3 (Teste 3).*
+
+### 2. Calibração do Threshold
+
+O threshold foi calibrado utilizando o Golden Set do projeto. Foram considerados **26 casos `ANSWER` e 5 `NO_ANSWER`**. Os casos `ESCALATE` foram excluídos porque pertencem à decisão da Frente 4.
+
+O maior score observado entre os casos `NO_ANSWER` foi **0.285791**, enquanto o menor `ANSWER` recuperável acima da região de sobreposição foi **0.338926**.
+
+Com `ABSTENTION_THRESHOLD = 0.30`:
+
+- **25/26** casos `ANSWER` foram liberados;
+- **5/5** casos `NO_ANSWER` foram bloqueados;
+- o acerto global foi de aproximadamente **96,8%**.
+
+O único `ANSWER` bloqueado foi `dados_cadastrais`, caso em que a fonte esperada não apareceu no Top 3 do retrieval. Por isso, a Frente 3 não implementou workaround e manteve o comportamento seguro de `NO_ANSWER`.
+
+> **![Calibração do Threshold 0.30](../../src/03_concierge/evidencias/Calibracao_Threshold.png)**
+
+*Figura 5 - Validação local do threshold 0,30 com valores de referência obtidos na calibração do Golden Set.*
+
+### 3. Implementação da Frente 3
+
+A implementação foi dividida em quatro módulos:
+
+- `confidence.py`: valida os chunks, verifica vigência e compara o maior score com o threshold;
+- `prompts.py`: constrói o contexto e aplica grounding, restringindo a resposta às evidências recuperadas;
+- `bedrock_client.py`: integra o Mistral Large 3 ao Amazon Bedrock Runtime via Boto3 e Converse API;
+- `answer.py`: orquestra confiança, prompt e geração, retornando `ANSWER` ou `NO_ANSWER`.
+
+Quando o maior score fica abaixo de `0.30`, ocorre **early exit** e o Mistral não é chamado. Quando o score é suficiente, o modelo recebe somente os chunks recuperados e pode retornar uma resposta grounded ou `NO_ANSWER`.
+
+As fontes não são geradas pelo LLM. Elas são construídas diretamente a partir dos chunks, preservando `document`, `chunk_id`, `score` e `status`.
+
+### 4. Testes e Validação Real
+
+Os testes automatizados cobrem threshold, grounding, payload do Bedrock, early exit, fontes determinísticas e propagação de erros técnicos.
+
+Ao final:
+
+- **128 testes da Frente 3 foram aprovados**;
+- junto às regressões locais seguras da Frente 2, foram obtidos **133 testes aprovados e 0 falhas**.
+
+> **![Testes automatizados aprovados](../../src/03_concierge/evidencias/Testes_Automatizados.png)**
+
+*Figura 6 - Resultado consolidado dos testes automatizados.*
+
+Também foi realizado um smoke test real com o Mistral Large 3 no Amazon Bedrock. O modelo respondeu corretamente **`8 GB`** para o Conecta Básico e retornou exatamente **`NO_ANSWER`** para uma pergunta sem evidência.
+
+> **![Smoke test real Mistral](../../src/03_concierge/evidencias/Teste_Smoke_Test_Mistral_Large_3.png)**
+
+*Figura 7 - Smoke test real do Mistral Large 3 via Bedrock Converse.*
+
+### 5. Integração Frente 2 → Frente 3
+
+Foi realizado um teste ponta a ponta utilizando o retrieval real da Frente 2 e a geração da Frente 3.
+
+Foram validados três cenários:
+
+1. **eSIM — `ANSWER`**  
+   A pergunta "Como ativo um eSIM?" recuperou `procedimento_troca_chip_esim.md` como Rank 1, com score **0.746229**, e gerou resposta correta.
+
+2. **Fora do corpus — `NO_ANSWER`**  
+   A pergunta "Qual será a previsão do tempo amanhã?" obteve score máximo **0.128005**, abaixo do threshold. O resultado foi `NO_ANSWER`, com `sources = []` e **Mistral chamado: False**.
+
+3. **Vigência — Política de Reembolso**  
+   A pergunta "Qual é o prazo para pedir reembolso?" recuperou somente `politica_reembolso_v2.md`, todos os chunks estavam `vigente`, a versão V1 não apareceu e a resposta correta foi **90 dias corridos**.
+
+> **![eSIM / ANSWER](../../src/03_concierge/evidencias/Teste1_Integration_Test_Front2_Front3.png)**
+
+> **![NO_ANSWER / Mistral chamado False](../../src/03_concierge/evidencias/Teste2_Integration_Test_Front2_Front3.png)**
+
+> **![Vigência / Reembolso](../../src/03_concierge/evidencias/Teste3_Integration_Test_Front2_Front3.png)**
+
+*Figuras 8 a 10 - Validação da integração real entre Frente 2 e Frente 3.*
+
+### 6. Síntese e Decisão de Design
+
+A Frente 3 foi projetada para combinar **confiança determinística, grounding e rastreabilidade**.
+
+A principal decisão de segurança foi utilizar o threshold `0.30` para impedir geração quando a evidência é insuficiente. Isso reduz risco de alucinação, custo e latência.
+
+O Mistral Large 3 foi selecionado pelo equilíbrio entre qualidade, aderência ao `NO_ANSWER`, desempenho e custo. As fontes permanecem determinísticas e derivadas dos chunks recuperados.
+
+As responsabilidades de `ESCALATE`, `trace_id`, handoff e auditoria permanecem fora da Frente 3 e serão tratadas na integração com as Frentes 4 e 5.
+
+---
+
 ### Kleidson Matos da Rocha
 
 - **Papel:** Frente 5 (Integração, Auditoria e Qualidade)
