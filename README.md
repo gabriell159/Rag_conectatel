@@ -7,6 +7,7 @@ Projeto de Concierge com pipeline de dados, RAG, Bedrock, triagem, auditoria e a
 - **01 — Pipeline:** limpeza/análise de chamados e publicação de dados no S3.
 - **02 — RAG:** ingestão, vigência, chunking, embeddings Titan, FAISS e S3.
 - **03 — Concierge:** retrieval, guardrails, Bedrock e decisões ANSWER/NO_ANSWER/ESCALATE.
+- **04 — Triagem:** regras determinísticas de escalonamento e handoff estruturado.
 - **05 — Integração:** contrato, trace_id, handoff, auditoria, relatórios e demonstração serverless na AWS.
 
 O tratamento e os testes unitários rodam localmente. RAG/Concierge real, upload S3 e golden set exigem AWS.
@@ -156,6 +157,19 @@ Exemplo resumido de resposta informativa:
 Perguntas fora do corpus retornam `NO_ANSWER`; solicitações que exigem ação
 humana retornam `ESCALATE` com um `handoff` rastreável.
 
+## Frente 04 — Triagem e escalonamento
+
+A triagem é executada no fluxo real, **antes** da consulta ao RAG. Ela trata
+relatos concretos de fraude, contestação de valor alto, multa contestada,
+falecimento, órgãos externos, conduta abusiva e necessidade de visita técnica.
+Perguntas informativas sobre essas regras continuam no RAG; por exemplo, uma
+pergunta sobre o preço de um plano não é escalonada apenas por mencionar um
+valor acima de R$ 500.
+
+Todo `ESCALATE` recebe um handoff completo, incluindo protocolo, categoria,
+urgência, produto envolvido, ação solicitada e `rule_id`. Esses campos são
+auditados junto com o mesmo `trace_id` da interação.
+
 ## Frente 05 — integração e auditoria
 
 Executor real:
@@ -167,7 +181,7 @@ Executor real:
 Mock offline, somente para testes:
 
 ```powershell
-.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.04_run_mock "Estou sem sinal."
+.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.04_run_mock "Preciso de visita técnica, estou sem sinal há dias."
 ```
 
 Consultar uma interação:
@@ -200,8 +214,10 @@ sam deploy --guided --resolve-image-repos --template-file .aws-sam/build/templat
 ```
 
 No assistente, informe `RagBucketName`, `AuditBucketName`, `S3Prefix` e
-`AllowedOrigin`. Use o bucket que contém o vector store oficial. O output
-`ApiUrl` deve ser configurado em
+`AllowedOrigin`. Para habilitar a console administrativa, informe também
+`AuditCallbackUrl` (por exemplo, `https://SEU_DOMINIO.amplifyapp.com/audit.html`)
+e um `AuditUserPoolDomainPrefix` globalmente único. Use o bucket que contém o
+vector store oficial. O output `ApiUrl` deve ser configurado em
 `src/05_integracao_auditoria_qualidade/deployment/web/config.js`.
 
 Ligue a demonstração apenas durante testes/apresentação:
@@ -237,6 +253,33 @@ artefatos locais e não devem ser commitados.
 
 Consulte o guia detalhado em
 [`docs/05_reflexao/deploy_interno.md`](docs/05_reflexao/deploy_interno.md).
+
+#### Console administrativa de auditoria
+
+Após o deploy, a rota `POST /audit` recebe um `trace_id` e recupera o evento
+do S3. Ela exige login Cognito e verifica o grupo `auditor`; o navegador não
+recebe permissão AWS nem acesso direto ao bucket. Copie os outputs
+`AuditApiUrl`, `AuditUserPoolClientId` e o prefixo Cognito para `config.js`:
+
+```js
+auditApiUrl: "https://SUA_API.execute-api.us-east-1.amazonaws.com/audit",
+auditUserPoolClientId: "OUTPUT_AuditUserPoolClientId",
+auditUserPoolDomain: "PREFIXO_INFORMADO_NO_DEPLOY",
+```
+
+Crie e autorize o usuário administrativo (substitua os valores entre `< >`):
+
+```powershell
+aws cognito-idp admin-create-user --user-pool-id <POOL_ID> --username <EMAIL> --user-attributes Name=email,Value=<EMAIL> Name=email_verified,Value=true --message-action SUPPRESS --region us-east-1
+aws cognito-idp admin-set-user-password --user-pool-id <POOL_ID> --username <EMAIL> --password "<SENHA_FORTE>" --permanent --region us-east-1
+aws cognito-idp admin-add-user-to-group --user-pool-id <POOL_ID> --username <EMAIL> --group-name auditor --region us-east-1
+```
+
+Publique o ZIP atualizado e abra `https://SEU_DOMINIO.amplifyapp.com/audit.html`.
+Após autenticar, informe o `trace_id` de uma conversa ou use **Carregar últimos
+traces** para escolher uma das 20 referências mais recentes. A lista exibe apenas
+identificador e horário; a reconstrução completa continua sendo recuperada sob
+demanda. A tela mostra pergunta, decisão, resposta, fontes, guardrail e handoff.
 
 ## Golden set
 
@@ -293,6 +336,7 @@ Todos:
 src/01_pipeline_tratamento/             Frente 01
 src/02_rag/                             Frente 02
 src/03_concierge/                       Frente 03
+src/04_triage/                          Frente 04
 src/05_integracao_auditoria_qualidade/  Frente 05
 data/raw/conectatel-dados/corpus/       corpus oficial
 data/processed/vectorstore/             índice RAG

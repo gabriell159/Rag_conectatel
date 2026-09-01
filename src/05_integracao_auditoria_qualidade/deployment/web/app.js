@@ -24,7 +24,8 @@ function renderConversations() {
 }
 function responseHtml(data) {
   const citations = (data.citations || []).map((item) => `<li><strong>${escapeHtml(item.source_file)}</strong><br><code>${escapeHtml(item.chunk_id)}</code><span>score ${Number(item.score).toFixed(3)} · ${escapeHtml(item.status)}</span></li>`).join("");
-  const handoff = data.handoff ? `<div class="handoff"><strong>Encaminhamento humano</strong><span>${escapeHtml(data.handoff.reason)} · prioridade ${escapeHtml(data.handoff.priority)}</span><p>${escapeHtml(data.handoff.requested_action)}</p></div>` : "";
+  const handoffDetails = data.handoff?.protocolo_atendimento ? `<dl class="handoff-details"><div><dt>Protocolo</dt><dd>${escapeHtml(data.handoff.protocolo_atendimento)}</dd></div><div><dt>Categoria</dt><dd>${escapeHtml(data.handoff.categoria_motivo)}</dd></div><div><dt>Produto</dt><dd>${escapeHtml(data.handoff.produto_servico_envolvido)}</dd></div><div><dt>Status</dt><dd>${escapeHtml(data.handoff.status_escalonamento)}</dd></div></dl>` : "";
+  const handoff = data.handoff ? `<div class="handoff"><strong>Encaminhamento humano</strong><span>${escapeHtml(data.handoff.reason)} · prioridade ${escapeHtml(data.handoff.priority)}</span><p>${escapeHtml(data.handoff.requested_action)}</p>${handoffDetails}</div>` : "";
   const sourceBlock = citations ? `<details><summary>Fontes vigentes (${data.citations.length})</summary><ul class="citations">${citations}</ul></details>` : "";
   const guardrail = data.guardrail ? `<p class="guardrail">Guardrail: ${escapeHtml(data.guardrail)}</p>` : "";
   return `<article class="assistant-card ${escapeHtml(data.decision)}"><div class="decision-line"><span class="badge">${escapeHtml(data.decision)}</span><span>${formatDuration(data.duration_ms)}</span></div><p class="answer">${escapeHtml(data.answer)}</p>${sourceBlock}${handoff}${guardrail}<footer>Trace ID: <code>${escapeHtml(data.trace_id)}</code></footer></article>`;

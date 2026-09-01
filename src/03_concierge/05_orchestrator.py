@@ -17,10 +17,16 @@ new_trace_id = importlib.import_module(
 AuditLogger = importlib.import_module(
     "src.05_integracao_auditoria_qualidade.02_audit"
 ).AuditLogger
+classify_escalation = importlib.import_module(
+    "src.04_triage.01_classifier"
+).classify_escalation
+build_escalation_payload = importlib.import_module(
+    "src.04_triage.02_handoff"
+).build_escalation_payload
 
 
-def classify_handoff(question: str) -> dict[str, str] | None:
-    """Aplica regras determinísticas para casos que exigem atendimento humano."""
+def classify_handoff(question: str) -> dict[str, Any] | None:
+    """Executa a triagem oficial antes do RAG e prepara o handoff auditável."""
 
     normalized = question.casefold()
     informational_markers = (
@@ -34,33 +40,19 @@ def classify_handoff(question: str) -> dict[str, str] | None:
     # Relatos ou pedidos de ação sobre um caso concreto continuam escalonados.
     if any(marker in normalized for marker in informational_markers):
         return None
-    rules = [
-        (("fraude", "golpe"), "suspeita de fraude", "alta"),
-        (("anatel",), "reclamação regulatória", "alta"),
-        (("faleceu", "falecimento", "titularidade"), "alteração de titularidade", "alta"),
-        (("visita técnica", "visita tecnica", "infraestrutura", "sem sinal"), "intervenção técnica", "normal"),
-        (("não concordo", "nao concordo", "discordo", "contesto"), "contestação de cobrança", "normal"),
-    ]
-    for terms, reason, priority in rules:
-        if any(term in normalized for term in terms):
-            return {
-                "reason": reason,
-                "summary": question.strip(),
-                "requested_action": "avaliar o caso e dar continuidade ao atendimento",
-                "priority": priority,
-            }
+    # Não enviamos o score do RAG: falta de evidência deve resultar em
+    # NO_ANSWER, e não em encaminhamento humano automático.
+    should_escalate, rule_info = classify_escalation(question)
+    if not should_escalate or rule_info is None:
+        return None
 
-    amount = re.search(r"r\$\s*([\d.,]+)", normalized)
-    if amount:
-        value = float(amount.group(1).replace(".", "").replace(",", "."))
-        if value >= 500:
-            return {
-                "reason": "contestação de valor alto com verificação antifraude",
-                "summary": question.strip(),
-                "requested_action": "encaminhar para análise humana e verificação antifraude",
-                "priority": "alta",
-            }
-    return None
+    handoff = build_escalation_payload(question, rule_info)
+    # Mantém a convenção histórica do Concierge e preserva o código canônico
+    # HIGH/MEDIUM/LOW para consumo externo e auditoria.
+    handoff["priority_code"] = handoff["priority"]
+    handoff["priority"] = rule_info["priority"]
+    handoff["reason"] = str(handoff["reason"]).casefold()
+    return handoff
 
 
 def _direct_evidence(question: str, chunks: list[dict]) -> bool:
@@ -163,7 +155,11 @@ def run_question(question: str, audit_path: Path | None = None) -> dict[str, Any
             "threshold": threshold,
             "candidates": _retrieval_candidates(chunks),
         },
-        "component_versions": {"concierge": "03-concierge-v1", "pipeline": "integrated"},
+        "component_versions": {
+            "concierge": "03-concierge-v1",
+            "triage": "04-triage-v1",
+            "pipeline": "integrated",
+        },
     }
     AuditLogger(audit_path).append(event)
     return event

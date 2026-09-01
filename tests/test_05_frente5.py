@@ -1,5 +1,6 @@
 import json
 import importlib
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,6 +14,13 @@ retriever = importlib.import_module("src.02_rag.07_retriever")
 
 
 class Frente5ContractTests(unittest.TestCase):
+    def setUp(self):
+        self._audit_environment = patch.dict(os.environ, {"AUDIT_S3_BUCKET": ""})
+        self._audit_environment.start()
+
+    def tearDown(self):
+        self._audit_environment.stop()
+
     def test_fluxo_real_answer_valida_contrato_e_audita(self):
         chunks = [{
             "content": "O prazo de reembolso e de 90 dias corridos.",
@@ -69,10 +77,13 @@ class Frente5ContractTests(unittest.TestCase):
     def test_escalate_tem_handoff_completo(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "audit.jsonl"
-            event = run_mock("Estou sem sinal.", path)
+            event = run_mock("Preciso de visita técnica, estou sem sinal há dias.", path)
             recovered = AuditLogger(path).find_by_trace_id(event["trace_id"])
         self.assertEqual(event["decision"], "ESCALATE")
-        self.assertEqual(set(event["handoff"]), {"reason", "summary", "requested_action", "priority"})
+        self.assertTrue(
+            {"reason", "summary", "requested_action", "priority"}.issubset(event["handoff"])
+        )
+        self.assertEqual(event["handoff"]["rule_id"], "visita_tecnica_presencial")
         self.assertEqual(recovered["trace_id"], event["trace_id"])
 
     def test_contrato_rejeita_citacao_revogada(self):

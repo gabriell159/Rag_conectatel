@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditoria · Concierge ConectaTel</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="audit-page">
+      <header class="audit-header">
+        <a class="audit-brand" href="index.html"><span>AI<span>∿</span>R</span> Concierge ConectaTel</a>
+        <div><span class="audit-role">CONSOLE RESTRITA · AUDITOR</span><button id="logout" class="text-button" type="button">Sair</button></div>
+      </header>
+      <main class="audit-workspace">
+        <p class="eyebrow">SQUAD 1 · PB AI/R · GOVERNANÇA</p>
+        <h1>Reconstrução de interação</h1>
+        <p class="audit-intro">Informe o <code>trace_id</code> da resposta selecionada. A consulta recupera o evento imutável de auditoria armazenado no S3.</p>
+        <section id="auth-state" class="audit-state" aria-live="polite"></section>
+        <form id="trace-form" class="audit-search">
+          <label for="trace-id">Trace ID</label>
+          <div><input id="trace-id" autocomplete="off" placeholder="trc_..." required /><button id="search" type="submit">Reconstruir interação</button></div>
+        </form>
+        <section class="recent-audits" aria-label="Interações recentes">
+          <div><h2>Interações recentes</h2><button id="load-recent" type="button">Carregar últimos traces</button></div>
+          <p>Use esta lista como apoio durante a demonstração. A busca manual por um trace fornecido pela banca continua disponível acima.</p>
+          <div id="recent-list" aria-live="polite"></div>
+        </section>
+        <section id="audit-result" class="audit-result" aria-live="polite"></section>
+      </main>
+    </div>
+    <script src="config.js"></script>
+    <script src="audit.js"></script>
+  </body>
+</html>

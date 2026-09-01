@@ -107,6 +107,18 @@ def normalize_text(text: str) -> str:
 
 
 def check_high_value_contest(text: str) -> bool:
+    """Identifica valores altos somente quando existe intenção de contestação.
+
+    Uma pergunta informativa, como "o plano custa R$ 599?", deve seguir para
+    o RAG; o valor isolado não caracteriza um caso de atendimento humano.
+    """
+    contestation_markers = (
+        "contest", "cobranca indevida", "nao reconheco", "nao concordo",
+        "discordo", "indevida", "reembolso", "golpe",
+    )
+    if not any(marker in text for marker in contestation_markers):
+        return False
+
     match = re.search(r"r\$\s*([\d.,]+)", text)
     if match:
         try:

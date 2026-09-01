@@ -26,7 +26,7 @@ def extract_contextual_info(question: str) -> Dict[str, str]:
 def build_escalation_payload(
     question: str,
     rule_info: Dict[str, Any],
-    source_document: Optional[str] = "Politica_de_Suporte_e_Escalonamento_v1.pdf",
+    source_document: Optional[str] = "corpus/politicas/politica_suporte_escalonamento.md",
     contact_data: Optional[str] = "Cliente autenticado via sistema (canal digital)"
 ) -> Dict[str, Any]:
     context = extract_contextual_info(question)
@@ -49,6 +49,7 @@ def build_escalation_payload(
         "produto_servico_envolvido": context["produto_servico"],
         "status_escalonamento": "pendente_atendimento_humano",
         "data_hora_escalonamento": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "rule_id": rule_info.get("rule_id", "escalonamento_humano"),
         "reason": rule_info.get("category_key", "Escalonamento Humano Mandatorio"),
         "summary": question,
         "requested_action": f"Atendimento humano especialista para tratamento da categoria: {rule_info.get('category_key')}.",

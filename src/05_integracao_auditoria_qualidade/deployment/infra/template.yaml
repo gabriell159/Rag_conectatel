@@ -19,6 +19,12 @@ Parameters:
   BedrockModelId:
     Type: String
     Default: mistral.mistral-large-3-675b-instruct
+  AuditCallbackUrl:
+    Type: String
+    Description: URL HTTPS da pagina audit.html publicada no Amplify.
+  AuditUserPoolDomainPrefix:
+    Type: String
+    Description: Prefixo globalmente unico para o dominio Cognito da console de auditoria.
 
 Resources:
   DemoEnabledParameter:
@@ -40,6 +46,57 @@ Resources:
           - OPTIONS
         AllowHeaders:
           - Content-Type
+          - Authorization
+      Auth:
+        Authorizers:
+          AuditJwtAuthorizer:
+            IdentitySource: "$request.header.Authorization"
+            JwtConfiguration:
+              audience:
+                - !Ref AuditUserPoolClient
+              issuer: !Sub "https://cognito-idp.${AWS::Region}.amazonaws.com/${AuditUserPool}"
+
+  AuditUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${AWS::StackName}-audit-admin"
+      UsernameAttributes: [email]
+      AutoVerifiedAttributes: [email]
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+
+  AuditUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref AuditUserPool
+      ClientName: !Sub "${AWS::StackName}-audit-web"
+      GenerateSecret: false
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows: [implicit]
+      AllowedOAuthScopes: [openid]
+      CallbackURLs: [!Ref AuditCallbackUrl]
+      LogoutURLs: [!Ref AuditCallbackUrl]
+      SupportedIdentityProviders: [COGNITO]
+
+  AuditUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref AuditUserPoolDomainPrefix
+      UserPoolId: !Ref AuditUserPool
+
+  AuditAuditorGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: auditor
+      Description: Usuários autorizados a consultar rastros de auditoria.
+      UserPoolId: !Ref AuditUserPool
 
   ConciergeFunction:
     Type: AWS::Serverless::Function
@@ -80,8 +137,17 @@ Resources:
               Action: [s3:PutObject]
               Resource: !Sub "arn:${AWS::Partition}:s3:::${AuditBucketName}/${S3Prefix}/audit/*"
             - Effect: Allow
+              Action: [s3:GetObject]
+              Resource: !Sub "arn:${AWS::Partition}:s3:::${AuditBucketName}/${S3Prefix}/audit/*"
+            - Effect: Allow
+              Action: [s3:ListBucket]
+              Resource: !Sub "arn:${AWS::Partition}:s3:::${AuditBucketName}"
+              Condition:
+                StringLike:
+                  s3:prefix: !Sub "${S3Prefix}/audit/*"
+            - Effect: Allow
               Action: [ssm:GetParameter]
-              Resource: !GetAtt DemoEnabledParameter.Arn
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/conectatel/demo/enabled"
             - Effect: Allow
               Action: [bedrock:InvokeModel]
               Resource: !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/*"
@@ -92,6 +158,22 @@ Resources:
             ApiId: !Ref ConciergeApi
             Path: /ask
             Method: POST
+        Audit:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ConciergeApi
+            Path: /audit
+            Method: POST
+            Auth:
+              Authorizer: AuditJwtAuthorizer
+        AuditRecent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ConciergeApi
+            Path: /audit/recent
+            Method: POST
+            Auth:
+              Authorizer: AuditJwtAuthorizer
 
 Outputs:
   ApiUrl:
@@ -99,3 +181,16 @@ Outputs:
     Value: !Sub "https://${ConciergeApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/ask"
   DemoEnabledParameterName:
     Value: !Ref DemoEnabledParameter
+  AuditApiUrl:
+    Description: URL POST protegida para consultar uma interacao por trace_id.
+    Value: !Sub "https://${ConciergeApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/audit"
+  AuditUserPoolId:
+    Value: !Ref AuditUserPool
+  AuditUserPoolClientId:
+    Value: !Ref AuditUserPoolClient
+  AuditUserPoolDomain:
+    Description: Dominio Cognito sem o sufixo .auth da console administrativa.
+    Value: !Ref AuditUserPoolDomainPrefix
+  AuditHostedUiLoginUrl:
+    Description: Login Cognito da console administrativa.
+    Value: !Sub "https://${AuditUserPoolDomainPrefix}.auth.${AWS::Region}.amazoncognito.com/login?client_id=${AuditUserPoolClient}&response_type=token&scope=openid&redirect_uri=${AuditCallbackUrl}"

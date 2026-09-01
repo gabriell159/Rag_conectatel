@@ -1,4 +1,5 @@
 import importlib
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -29,6 +30,15 @@ class ConciergeIntegratedTests(unittest.TestCase):
         )
         self.assertIsNotNone(handoff)
         self.assertEqual(handoff["reason"], "suspeita de fraude")
+        self.assertEqual(handoff["rule_id"], "fraude")
+        self.assertEqual(handoff["priority"], "alta")
+        self.assertEqual(handoff["priority_code"], "HIGH")
+        self.assertTrue(handoff["protocolo_atendimento"].startswith("PROT-"))
+
+    def test_valor_alto_sem_contestacao_nao_escalona(self):
+        self.assertIsNone(
+            orchestrator.classify_handoff("O plano premium custa R$ 599,00?")
+        )
 
     def test_valor_basico_com_evidencia_pode_ser_deterministico(self):
         chunks = [{
@@ -43,7 +53,11 @@ class ConciergeIntegratedTests(unittest.TestCase):
         )
 
     def test_fraude_escalates_com_handoff_e_auditoria(self):
-        with tempfile.TemporaryDirectory() as directory:
+        # O teste cobre o contrato local; publicação S3 é coberta nas integrações.
+        # Isso evita depender de credenciais, rede ou proxy durante a suíte unitária.
+        with tempfile.TemporaryDirectory() as directory, patch.dict(
+            os.environ, {"AUDIT_S3_BUCKET": ""}
+        ):
             event = orchestrator.run_question(
                 "Acho que fizeram uma fraude usando minha linha.",
                 Path(directory) / "audit.jsonl",

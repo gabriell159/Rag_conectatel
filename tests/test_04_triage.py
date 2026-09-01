@@ -57,6 +57,13 @@ class TestClassifier:
         assert rule_info is not None
         assert rule_info["rule_id"] == "ausencia_fonte_suficiente"
 
+    def test_valor_alto_informativo_nao_e_escalonamento(self):
+        should_escalate, rule_info = classify_escalation(
+            "O plano premium custa R$ 599,00?"
+        )
+        assert should_escalate is False
+        assert rule_info is None
+
 
 class TestHandoff:
     def test_build_escalation_payload_structure(self):
@@ -92,6 +99,8 @@ class TestHandoff:
 
         assert payload["priority"] == "HIGH"
         assert payload["reason"] == "Suspeita de fraude"
+        assert payload["rule_id"] == "fraude"
+        assert payload["documento_fonte_consultado"] == "corpus/politicas/politica_suporte_escalonamento.md"
         assert "R$ 600,00" in payload["historico_ja_levantado"]
 
 
