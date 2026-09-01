@@ -1,273 +1,327 @@
 # Concierge ConectaTel
 
-Projeto de Concierge com pipeline de dados, RAG, Bedrock, triagem, auditoria e avaliação.
+Assistente de atendimento interno da ConectaTel desenvolvido pela Squad 1 (PB AI/R). A solução trata chamados, constrói um RAG sobre o corpus oficial, responde com evidências vigentes, encaminha casos sensíveis e mantém uma trilha de auditoria consultável.
 
-## Frentes
+> Este é o guia de execução oficial da raiz do repositório. Uma pessoa que não participou da implementação deve conseguir instalar, executar, testar e demonstrar o projeto seguindo este documento.
 
-- **01 — Pipeline:** limpeza/análise de chamados e publicação de dados no S3.
-- **02 — RAG:** ingestão, vigência, chunking, embeddings Titan, FAISS e S3.
-- **03 — Concierge:** retrieval, guardrails, Bedrock e decisões ANSWER/NO_ANSWER/ESCALATE.
-- **04 — Triagem:** regras determinísticas de escalonamento e handoff estruturado.
-- **05 — Integração:** contrato, trace_id, handoff, auditoria, relatórios e demonstração serverless na AWS.
+## Visão geral
 
-O tratamento e os testes unitários rodam localmente. RAG/Concierge real, upload S3 e golden set exigem AWS.
+| Frente | Entrega |
+| --- | --- |
+| 01 — Pipeline | Limpeza, análise e publicação de dados de chamados. |
+| 02 — RAG | Chunking, metadados de vigência, embeddings Titan, FAISS e S3. |
+| 03 — Concierge | Retrieval, Bedrock, citações, `ANSWER` e `NO_ANSWER`. |
+| 04 — Triagem | Regras determinísticas e handoff estruturado para `ESCALATE`. |
+| 05 — Integração | Contrato, `trace_id`, auditoria, qualidade e demonstração serverless. |
 
-> O projeto não é executado sem instalação prévia: é necessário ter Python,
-> as dependências do `requirements.txt` e, para o fluxo real, acesso AWS.
+```text
+Corpus e chamados → Pipeline/RAG → S3 (vectorstore)
+                                 ↓
+Usuário → Amplify → API Gateway → Lambda → Bedrock
+                                      ↓
+                             S3 (auditoria) → Console Cognito
+```
 
-## Instalação no Windows
+## Pré-requisitos
 
-Pré-requisitos: Windows 10/11 e Python 3.11+.
+### Local
+
+- Windows 10/11, Python 3.11+ e Git.
+- Acesso de leitura a este repositório.
+
+### AWS (RAG real, golden set e demonstração)
+
+- AWS CLI autenticado;
+- acesso a S3 e Bedrock em `us-east-1`;
+- SAM CLI e Docker Desktop, apenas para publicar a demonstração;
+- permissões de CloudFormation, Lambda, API Gateway, IAM, SSM e Cognito, apenas para o deploy.
+
+Confira a instalação:
+
+```powershell
+py -3.11 --version
+aws --version
+sam --version
+docker version
+aws sts get-caller-identity
+```
+
+## Instalação do zero
+
+Na raiz do projeto:
 
 ```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
-
-A ativação é opcional. Se quiser ativar:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-.\.venv\Scripts\Activate.ps1
-```
-
-Se o PowerShell bloquear scripts, use diretamente ` .\.venv\Scripts\python.exe ` nos comandos.
-
-## Configuração AWS
-
-```powershell
 Copy-Item .env.example .env
 ```
 
-Preencha no `.env`:
+A ativação é opcional. Se desejar usá-la somente nesta janela:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```
+
+Os comandos deste README usam `.\.venv\Scripts\python.exe`, portanto também funcionam sem ativar o ambiente.
+
+## Comandos rápidos
+
+`run.py` é o ponto de entrada seguro da solução. Ele organiza os comandos
+oficiais, mas não possui uma opção que execute tudo de uma vez — operações que
+podem consumir AWS, alterar o S3 ou gerar custo exigem uma escolha explícita.
+
+```powershell
+.\.venv\Scripts\python.exe run.py --help
+.\.venv\Scripts\python.exe run.py pipeline
+.\.venv\Scripts\python.exe run.py rag-build
+.\.venv\Scripts\python.exe run.py ask "Qual e o prazo para pedir reembolso?"
+.\.venv\Scripts\python.exe run.py run-real "Acredito que fizeram fraude usando minha linha."
+.\.venv\Scripts\python.exe run.py trace trc_EXEMPLO
+.\.venv\Scripts\python.exe run.py quality-report
+.\.venv\Scripts\python.exe run.py test
+```
+
+Para golden set ou testes remotos, use `run.py golden-set` e
+`run.py test --scope integration`, respectivamente.
+
+## Configuração do `.env`
+
+Edite o `.env` criado no passo anterior. Nunca versione esse arquivo.
 
 ```env
+# Escolha AWS_PROFILE ou credenciais temporárias; não publique nenhum segredo.
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_SESSION_TOKEN=
-AWS_REGION=us-east-1
 AWS_PROFILE=
+AWS_REGION=us-east-1
+
 S3_BUCKET_NAME=seu-bucket
 S3_PREFIX=conectatel
 BEDROCK_MODEL_ID=mistral.mistral-large-3-675b-instruct
 BEDROCK_EMBEDDING_MODEL_ID=amazon.titan-embed-text-v2:0
 ABSTENTION_THRESHOLD=0.30
 RAG_VECTORSTORE_VERSION=v1
+
 AUDIT_LOG_PATH=data/processed/audit/audit_log.jsonl
-AUDIT_S3_BUCKET=
+AUDIT_S3_BUCKET=seu-bucket
 AUDIT_S3_PREFIX=conectatel/audit
 ```
 
-Use credenciais `AWS_*` ou `AWS_PROFILE`. Nunca commite o `.env`.
+Notas:
 
-Valide a instalação e a identidade AWS antes de executar as etapas remotas:
+- Com AWS IAM Identity Center, configure `AWS_PROFILE` e execute `aws sso login --profile <perfil>`.
+- Credenciais temporárias expiram; em caso de `ExpiredToken`, renove a sessão e rode `aws sts get-caller-identity`.
+- O usuário/role remoto precisa de `s3:ListBucket`, `s3:GetObject`, `s3:PutObject` e `bedrock:InvokeModel`.
+- Um `AWS_PROFILE` inexistente causa `ProfileNotFound`; remova a variável ou informe um perfil válido.
+
+Validação inicial:
 
 ```powershell
-.\.venv\Scripts\python.exe --version
-.\.venv\Scripts\python.exe -c "import boto3; print(boto3.__version__)"
+.\.venv\Scripts\python.exe -c "import boto3, faiss, numpy; print('dependências OK')"
 aws sts get-caller-identity
 ```
 
-O usuário/role precisa conseguir ler e gravar os objetos do bucket configurado
-(`s3:ListBucket`, `s3:GetObject` e `s3:PutObject`) e invocar os modelos
-habilitados no Bedrock (`bedrock:InvokeModel`). A região do `.env` deve ser uma
-região em que esses modelos estejam disponíveis para a conta.
-
-## Ordem recomendada da primeira execução
+## Ordem da primeira execução
 
 ```text
-instalar dependências → configurar .env → executar Frente 01
-→ gerar/publicar o RAG → verificar S3 → executar Concierge
-→ executar testes e golden set
+Instalar dependências → configurar .env → Pipeline → construir RAG →
+verificar S3 → Concierge → auditoria/golden set → testes
 ```
 
-## Frente 01 — pipeline
+## 1. Pipeline de dados
+
+Tratamento e análise dos chamados:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.01_pipeline_tratamento.00_main
 ```
 
-Saída: `data/processed/log_chamados/chamados_clean.csv`.
+O principal resultado é `data/processed/log_chamados/chamados_clean.csv`.
 
-Publicar somente os dados da Frente 01:
+Para publicar os artefatos da Frente 01 no S3:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.01_pipeline_tratamento.00_main --upload
 ```
 
-O `--upload` publica apenas os artefatos da Frente 01. Ele não substitui a
-construção do índice RAG; execute também `src.02_rag.00_main --build`.
+`--upload` não constrói o índice vetorial; execute a etapa RAG a seguir.
 
-## Frente 02 — RAG
+## 2. RAG
 
-Fluxo oficial:
+Fluxo: ingestão → metadados/vigência → chunking → embeddings → FAISS → S3.
 
-```text
-ingestão → metadados/vigência → chunking → embeddings → FAISS → upload S3
-```
-
-Gerar o vector store do zero:
+Construa e publique o vector store:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.02_rag.00_main --build
 ```
 
-Artefatos locais em `data/processed/vectorstore/`:
-
-- `index.faiss`: embeddings Titan normalizados, 1024 dimensões.
-- `metadata.json`: conteúdo e metadados dos chunks.
-- `manifest.json`: versão, modelo, dimensão, quantidade e hash (opcional para compatibilidade com artefatos legados).
-
-Verificar os objetos S3:
+Verifique os objetos publicados:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.02_rag.00_main --verify
 ```
 
-Com `S3_PREFIX=conectatel`:
+Com `S3_PREFIX=conectatel`, são esperados:
 
 ```text
 s3://SEU_BUCKET/conectatel/vectorstore/index.faiss
 s3://SEU_BUCKET/conectatel/vectorstore/metadata.json
-# opcional quando o pipeline o gerar:
-s3://SEU_BUCKET/conectatel/vectorstore/manifest.json
+s3://SEU_BUCKET/conectatel/vectorstore/manifest.json  (quando gerado)
 ```
 
-O retriever usa o vector store oficial local, depois tenta o S3. `vectorstore_backup` é apenas salvaguarda quando o download oficial falha.
+O filtro de vigência é aplicado pelos metadados antes da similaridade. Assim, documento revogado não é uma fonte válida. Os artefatos locais ficam em `data/processed/vectorstore/`.
 
-## Frente 03 — Concierge real
+## 3. Concierge e triagem
+
+Pergunta real ao Concierge:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.03_concierge.00_main "Qual e o prazo para pedir reembolso?"
 ```
 
-A saída JSON contém `trace_id`, `decision`, `answer`, `citations`, `handoff`, `retrieval` e `component_versions`.
+A saída possui `trace_id`, `decision`, `answer`, `citations`, `handoff`, `guardrail`, `retrieval` e `component_versions`.
 
-Exemplo resumido de resposta informativa:
+| Cenário | Decisão esperada |
+| --- | --- |
+| Evidência vigente suficiente | `ANSWER`, com citações. |
+| Sem fonte ou score insuficiente | `NO_ANSWER`, sem inventar resposta. |
+| Fraude, contestação, falecimento, órgão externo, abuso ou visita técnica | `ESCALATE`, com handoff. |
 
-```json
-{
-  "decision": "ANSWER",
-  "answer": "90 dias corridos a partir da data de vencimento da fatura.",
-  "citations": [{"document": "politica_reembolso_v2.md", "status": "vigente"}]
-}
-```
+A triagem ocorre antes do RAG apenas em relatos que exigem ação. Perguntas informativas continuam no RAG. O handoff registra protocolo, categoria, urgência, ação solicitada e `rule_id`, evitando que o cliente repita contexto.
 
-Perguntas fora do corpus retornam `NO_ANSWER`; solicitações que exigem ação
-humana retornam `ESCALATE` com um `handoff` rastreável.
+## 4. Auditoria e relatório de qualidade
 
-## Frente 04 — Triagem e escalonamento
-
-A triagem é executada no fluxo real, **antes** da consulta ao RAG. Ela trata
-relatos concretos de fraude, contestação de valor alto, multa contestada,
-falecimento, órgãos externos, conduta abusiva e necessidade de visita técnica.
-Perguntas informativas sobre essas regras continuam no RAG; por exemplo, uma
-pergunta sobre o preço de um plano não é escalonada apenas por mencionar um
-valor acima de R$ 500.
-
-Todo `ESCALATE` recebe um handoff completo, incluindo protocolo, categoria,
-urgência, produto envolvido, ação solicitada e `rule_id`. Esses campos são
-auditados junto com o mesmo `trace_id` da interação.
-
-## Frente 05 — integração e auditoria
-
-Executor real:
+Executar o fluxo integrado real:
 
 ```powershell
-.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.04_run_real "Qual e o prazo para pedir reembolso?"
+.\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.04_run_real "Acredito que fizeram fraude usando minha linha."
 ```
 
-Mock offline, somente para testes:
+Mock offline, útil para teste sem AWS:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.04_run_mock "Preciso de visita técnica, estou sem sinal há dias."
 ```
 
-Consultar uma interação:
+Consultar um rastro local:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.05_query_trace <trace_id>
 ```
 
-Gerar métricas:
+Gerar relatório consolidado:
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.05_integracao_auditoria_qualidade.06_quality_report
 ```
 
-O contrato exige citações vigentes para `ANSWER`, nenhuma citação para `NO_ANSWER` e handoff completo para `ESCALATE`.
+Com `AUDIT_S3_BUCKET` configurado, cada evento validado é salvo em `<AUDIT_S3_PREFIX>/<trace_id>.json`, além do log local. Principais saídas:
 
-### Demonstração interna na AWS
+```text
+data/processed/audit/audit_log.jsonl
+data/processed/evaluation/golden_set_results.json
+data/processed/evaluation/golden_set_history.jsonl
+data/processed/evaluation/quality_report.json
+```
 
-A Frente 05 possui uma opção de demonstração serverless. Ela usa **API Gateway
-HTTP → Lambda → RAG no S3/Bedrock**, registra logs no CloudWatch e mantém o
-controle operacional em `/conectatel/demo/enabled` no Parameter Store. A
-Lambda usa IAM Role própria; o arquivo `.env` não é publicado.
+## 5. Golden set e testes
 
-Pré-requisitos adicionais: AWS CLI autenticado, Docker Desktop em execução e
-AWS SAM CLI. Faça o build e o deploy:
+Executar golden set:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.03_concierge.06_golden_set
+```
+
+Regenerar/validar sua expansão:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.03_concierge.07_expand_golden_set
+```
+
+Testes locais (recomendado antes de publicar):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q -m "not integration"
+```
+
+Testes de integração AWS e todos os testes:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q -m integration
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+## 6. Demonstração interna AWS
+
+O template SAM em `src/05_integracao_auditoria_qualidade/deployment/infra/template.yaml` provisiona API Gateway, Lambda em imagem Docker, IAM Role, Parameter Store, Cognito, CloudWatch e integrações S3/Bedrock.
+
+Com Docker Desktop aberto e AWS autenticada:
 
 ```powershell
 sam build --template-file src/05_integracao_auditoria_qualidade/deployment/infra/template.yaml
 sam deploy --guided --resolve-image-repos --template-file .aws-sam/build/template.yaml
 ```
 
-No assistente, informe `RagBucketName`, `AuditBucketName`, `S3Prefix` e
-`AllowedOrigin`. Para habilitar a console administrativa, informe também
-`AuditCallbackUrl` (por exemplo, `https://SEU_DOMINIO.amplifyapp.com/audit.html`)
-e um `AuditUserPoolDomainPrefix` globalmente único. Use o bucket que contém o
-vector store oficial. O output `ApiUrl` deve ser configurado em
-`src/05_integracao_auditoria_qualidade/deployment/web/config.js`.
+No primeiro deploy, informe:
 
-Ligue a demonstração apenas durante testes/apresentação:
+```text
+Stack Name: conectatel-demo
+AWS Region: us-east-1
+RagBucketName: bucket que contém conectatel/vectorstore/
+AuditBucketName: bucket para conectatel/audit/
+S3Prefix: conectatel
+AllowedOrigin: https://SEU_DOMINIO.amplifyapp.com
+BedrockModelId: mistral.mistral-large-3-675b-instruct
+AuditCallbackUrl: https://SEU_DOMINIO.amplifyapp.com/audit.html
+AuditUserPoolDomainPrefix: prefixo-globalmente-unico
+```
+
+Registre os outputs `ApiUrl`, `AuditApiUrl`, `AuditUserPoolId`, `AuditUserPoolClientId` e `AuditUserPoolDomain`.
+
+### Interruptor operacional
+
+A API pública começa desligada. Ligue-a apenas em testes/apresentação:
 
 ```powershell
 aws ssm put-parameter --name /conectatel/demo/enabled --type String --value true --overwrite --region us-east-1
 ```
 
-Para desligá-la, altere `true` para `false`. A Lambda pode manter o valor em
-cache por até 30 segundos. Desligada, ela não invoca Bedrock nem grava novas
-interações de auditoria.
-
-#### Interface no Amplify
-
-A pasta `src/05_integracao_auditoria_qualidade/deployment/web/` contém uma
-interface estática com chat, múltiplas conversas locais, histórico no navegador,
-métricas da sessão, citações, handoff e `trace_id`. As métricas exibidas na
-interface são locais; o relatório consolidado continua sendo gerado pela Frente
-05 a partir da auditoria.
-
-O deploy pode usar integração Git no Amplify ou publicação manual. Para a
-publicação manual, compacte o **conteúdo** da pasta web e envie o ZIP em
-**Amplify → Deploy without Git**:
+Desligue após o uso:
 
 ```powershell
-Compress-Archive -Path src\05_integracao_auditoria_qualidade\deployment\web\* -DestinationPath .\conectatel-web-amplify.zip
+aws ssm put-parameter --name /conectatel/demo/enabled --type String --value false --overwrite --region us-east-1
 ```
 
-Após obter a URL HTTPS do Amplify, atualize `AllowedOrigin` com o domínio exato
-do site para substituir o CORS temporário `*`. Use a proteção por senha do
-Amplify em uma demonstração interna. `.aws-sam/` e os ZIPs de publicação são
-artefatos locais e não devem ser commitados.
+A Lambda pode manter o valor em cache por até 30 segundos.
 
-Consulte o guia detalhado em
-[`docs/05_reflexao/deploy_interno.md`](docs/05_reflexao/deploy_interno.md).
+## 7. Interface Amplify e console de auditoria
 
-#### Console administrativa de auditoria
-
-Após o deploy, a rota `POST /audit` recebe um `trace_id` e recupera o evento
-do S3. Ela exige login Cognito e verifica o grupo `auditor`; o navegador não
-recebe permissão AWS nem acesso direto ao bucket. Copie os outputs
-`AuditApiUrl`, `AuditUserPoolClientId` e o prefixo Cognito para `config.js`:
+A interface estática está em `src/05_integracao_auditoria_qualidade/deployment/web/`. Atualize `config.js` com os outputs SAM:
 
 ```js
-auditApiUrl: "https://SUA_API.execute-api.us-east-1.amazonaws.com/audit",
-auditUserPoolClientId: "OUTPUT_AuditUserPoolClientId",
-auditUserPoolDomain: "PREFIXO_INFORMADO_NO_DEPLOY",
+window.CONCIERGE_CONFIG = {
+  apiUrl: "https://SUA_API.execute-api.REGION.amazonaws.com/ask",
+  auditApiUrl: "https://SUA_API.execute-api.REGION.amazonaws.com/audit",
+  auditUserPoolClientId: "OUTPUT_AuditUserPoolClientId",
+  auditUserPoolDomain: "OUTPUT_AuditUserPoolDomain",
+};
 ```
 
-Crie e autorize o usuário administrativo (substitua os valores entre `< >`):
+Para publicação manual, compacte o conteúdo da pasta web:
+
+```powershell
+Compress-Archive -Path src\05_integracao_auditoria_qualidade\deployment\web\* -DestinationPath .\conectatel-web-amplify.zip -Force
+```
+
+No AWS Amplify, escolha **Deploy without Git** e envie o ZIP. O domínio HTTPS real deve ser usado em `AllowedOrigin` e `AuditCallbackUrl`. Ative proteção por senha do Amplify para a demonstração interna.
+
+### Usuário auditor
+
+Abra `https://SEU_DOMINIO.amplifyapp.com/audit.html`. A console usa JWT Cognito e exige o grupo `auditor`; o navegador não recebe acesso direto ao S3.
 
 ```powershell
 aws cognito-idp admin-create-user --user-pool-id <POOL_ID> --username <EMAIL> --user-attributes Name=email,Value=<EMAIL> Name=email_verified,Value=true --message-action SUPPRESS --region us-east-1
@@ -275,83 +329,41 @@ aws cognito-idp admin-set-user-password --user-pool-id <POOL_ID> --username <EMA
 aws cognito-idp admin-add-user-to-group --user-pool-id <POOL_ID> --username <EMAIL> --group-name auditor --region us-east-1
 ```
 
-Publique o ZIP atualizado e abra `https://SEU_DOMINIO.amplifyapp.com/audit.html`.
-Após autenticar, informe o `trace_id` de uma conversa ou use **Carregar últimos
-traces** para escolher uma das 20 referências mais recentes. A lista exibe apenas
-identificador e horário; a reconstrução completa continua sendo recuperada sob
-demanda. A tela mostra pergunta, decisão, resposta, fontes, guardrail e handoff.
-
-## Golden set
-
-O conjunto possui 200 perguntas fundamentadas nos documentos oficiais.
-
-```powershell
-.\.venv\Scripts\python.exe -m src.03_concierge.06_golden_set
-```
-
-Saídas: `data/processed/evaluation/golden_set_results.json` e `golden_set_history.jsonl`.
-
-Os principais artefatos de avaliação e auditoria são:
-
-```text
-data/processed/evaluation/golden_set_results.json
-data/processed/evaluation/golden_set_history.jsonl
-data/processed/evaluation/quality_report.json
-data/processed/audit/audit_log.jsonl
-```
-
-O JSONL é a persistência local padrão. Para uma trilha compartilhada, preencha
-`AUDIT_S3_BUCKET` e `AUDIT_S3_PREFIX`; cada evento será validado pelo contrato
-e gravado como `<prefix>/<trace_id>.json` no S3, além da cópia local.
-
-Regenerar/validar o conjunto:
-
-```powershell
-.\.venv\Scripts\python.exe -m src.03_concierge.07_expand_golden_set
-```
-
-## Testes
-
-Unitários e locais:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q -m "not integration"
-```
-
-Integração com AWS:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q -m integration
-```
-
-Todos:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
+Após entrar, cole o `trace_id` fornecido pela banca ou use **Carregar últimos traces**. A lista mostra até 20 identificadores recentes e horários; após selecionar um, a tela recupera pergunta, resposta, decisão, fontes, guardrail, handoff e duração.
 
 ## Estrutura
 
 ```text
-src/01_pipeline_tratamento/             Frente 01
-src/02_rag/                             Frente 02
-src/03_concierge/                       Frente 03
-src/04_triage/                          Frente 04
-src/05_integracao_auditoria_qualidade/  Frente 05
-data/raw/conectatel-dados/corpus/       corpus oficial
-data/processed/vectorstore/             índice RAG
-data/processed/audit/                   auditoria
-schemas/05_interaction.schema.json      contrato
-tests/                                  testes
-docs/                                   documentação
-TODO.md                                pendências
+src/01_pipeline_tratamento/             Pipeline
+src/02_rag/                             RAG e vector store
+src/03_concierge/                       Orquestrador e golden set
+src/04_triage/                          Regras de escalonamento
+src/05_integracao_auditoria_qualidade/  Auditoria e deploy
+data/raw/conectatel-dados/corpus/       Corpus oficial
+data/processed/                         Artefatos gerados
+schemas/05_interaction.schema.json      Contrato de interação
+tests/                                  Testes automatizados
+docs/                                   Documentação de entrega
 ```
 
 ## Problemas comuns
 
-- **Python não encontrado:** use `py -3.11`.
-- **PowerShell bloqueado:** use `RemoteSigned` ou o Python do `.venv`.
-- **ProfileNotFound:** deixe `AWS_PROFILE=` vazio ou informe um perfil existente.
-- **404 no S3:** execute o build e confira bucket, prefixo e caminhos.
-- **Erro no Bedrock:** confira região, modelo habilitado e `bedrock:InvokeModel`.
-- **Golden set demorado:** acompanhe `data/processed/audit/audit_log.jsonl`.
+| Problema | Solução |
+| --- | --- |
+| `sam`/`aws` não reconhecido | Reabra o PowerShell após instalar e confira o `PATH`. |
+| Docker não inicia | Habilite virtualização/WSL 2 e reinicie a máquina. |
+| `ExpiredToken` | Renove SSO/credenciais e valide com `aws sts get-caller-identity`. |
+| `ProfileNotFound` | Corrija/remova `AWS_PROFILE` ou execute `aws configure sso`. |
+| Erro Bedrock | Confira região, acesso ao modelo e `bedrock:InvokeModel`. |
+| API retorna 503 | Ligue o parâmetro SSM e aguarde até 30 segundos. |
+| Console restringe acesso | Adicione o usuário ao grupo Cognito `auditor` e faça novo login. |
+| Amplify exibe versão antiga | Faça `Ctrl + F5` e confira se o ZIP contém os arquivos na raiz. |
+
+## Segurança e encerramento
+
+- Nunca versione `.env`, senhas, tokens ou credenciais.
+- `.aws-sam/` e ZIPs de publicação são artefatos locais e ficam no `.gitignore`.
+- Ao terminar uma demonstração, desligue o interruptor SSM para evitar novas invocações Bedrock.
+- Antes da entrega, execute os testes locais, faça o ensaio de reconstrução por `trace_id` e crie uma tag Git da versão congelada.
+
+Mais detalhes operacionais: [docs/05_reflexao/deploy_interno.md](docs/05_reflexao/deploy_interno.md).

@@ -33,3 +33,6 @@ data/processed/audit/
 
 # Vector store local do RAG
 data/processed/vectorstore/
+
+
+.zip

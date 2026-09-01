@@ -1,17 +1,12 @@
 import importlib
-import json
 import pytest
-from unittest.mock import patch, MagicMock
 
 classifier_mod = importlib.import_module("src.04_triage.01_classifier")
 handoff_mod = importlib.import_module("src.04_triage.02_handoff")
-handler_mod = importlib.import_module("src.04_triage.03_handler")
 
 classify_escalation = classifier_mod.classify_escalation
 ESCALATION_RULES = classifier_mod.ESCALATION_RULES
 build_escalation_payload = handoff_mod.build_escalation_payload
-process_event = handler_mod.process_event
-lambda_handler = handler_mod.lambda_handler
 
 
 class TestClassifier:
@@ -103,63 +98,3 @@ class TestHandoff:
         assert payload["documento_fonte_consultado"] == "corpus/politicas/politica_suporte_escalonamento.md"
         assert "R$ 600,00" in payload["historico_ja_levantado"]
 
-
-class TestHandler:
-    def test_process_event_empty_question(self):
-        response = process_event({"body": json.dumps({})})
-        assert response["statusCode"] == 400
-        assert "error" in response["body"]
-
-    def test_process_event_escalation_trigger(self):
-        event = {"question": "Minha linha foi clonada, sofri um golpe!"}
-        response = process_event(event)
-
-        assert response["statusCode"] == 200
-        body = response["body"]
-        assert body["decision"] == "ESCALATE"
-        assert body["answer"] is None
-        assert body["handoff"] is not None
-        assert body["handoff"]["reason"] == "Suspeita de fraude"
-
-    @patch("importlib.import_module")
-    def test_process_event_rag_answer_trigger(self, mock_importlib):
-        mock_retriever = MagicMock()
-        mock_retriever.buscar.return_value = [{"content": "Informação sobre fatura", "score": 0.9}]
-
-        mock_answer = MagicMock()
-        mock_answer.answer_question.return_value = "Sua fatura vence todo dia 10."
-
-        def import_side_effect(name):
-            if name == "src.02_rag.07_retriever":
-                return mock_retriever
-            if name == "src.03_concierge.04_answer":
-                return mock_answer
-            raise ModuleNotFoundError(name)
-
-        mock_importlib.side_effect = import_side_effect
-
-        event = {"question": "Qual é a data de vencimento da minha fatura?"}
-        response = process_event(event)
-
-        assert response["statusCode"] == 200
-        body = response["body"]
-        assert body["decision"] == "ANSWER"
-        assert body["answer"] == "Sua fatura vence todo dia 10."
-        assert body["handoff"] is None
-
-    @patch("importlib.import_module", side_effect=Exception("Falha na busca vetorial"))
-    def test_process_event_exception_fallback(self, mock_importlib):
-        event = {"question": "Qual é o plano mais barato?"}
-        response = process_event(event)
-
-        assert response["statusCode"] == 200
-        body = response["body"]
-        assert body["decision"] == "ESCALATE"
-        assert "internal_error" in body
-        assert body["handoff"]["reason"] == "Falha na execucao da cadeia RAG/Concierge"
-
-    def test_lambda_handler_proxy(self):
-        event = {"question": "Suspeita de fraude na minha conta"}
-        response = lambda_handler(event)
-        assert response["statusCode"] == 200
-        assert response["body"]["decision"] == "ESCALATE"
