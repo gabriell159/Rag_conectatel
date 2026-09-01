@@ -228,10 +228,7 @@ A principal decisão de segurança foi utilizar o threshold `0.30` para impedir 
 O Mistral Large 3 foi selecionado pelo equilíbrio entre qualidade, aderência ao `NO_ANSWER`, desempenho e custo. As fontes permanecem determinísticas e derivadas dos chunks recuperados.
 
 As responsabilidades de `ESCALATE`, `trace_id`, handoff e auditoria permanecem fora da Frente 3 e serão tratadas na integração com as Frentes 4 e 5.
-
----
-
-Aqui está o documento contendo exclusivamente a documentação da sua parte (**Vinicius Goulart / Frente 4: Triagem e Escalonamento**), já integrado com as suas decisões de design, a checagem do contrato de handoff, os detalhes da sumarização semântica via Bedrock, as instruções de teste/execução local e a política de IAM especificada.
+AM especificada.
 
 ---
 
