@@ -231,6 +231,118 @@ As responsabilidades de `ESCALATE`, `trace_id`, handoff e auditoria permanecem f
 
 ---
 
+Aqui está o documento contendo exclusivamente a documentação da sua parte (**Vinicius Goulart / Frente 4: Triagem e Escalonamento**), já integrado com as suas decisões de design, a checagem do contrato de handoff, os detalhes da sumarização semântica via Bedrock, as instruções de teste/execução local e a política de IAM especificada.
+
+---
+
+### Vinicius Nunes de Andrade
+
+* **Papel:** Frente 4 (Triagem, Escalonamento e IAM)
+* **Responsabilidades:** Implementação do classificador determinístico de triagem baseado nos 8 critérios obrigatórios da Política de Suporte e Escalonamento, desenvolvimento do mecanismo de sumarização semântica do caso via LLM (Amazon Bedrock), geração do payload padronizado de *handoff* para atendimento humano e especificação das políticas de segurança IAM de menor privilégio para a infraestrutura.
+
+---
+
+## Decisões de Design — Frente 4: Triagem e Escalonamento
+
+### 1. Classificação Determinística e Regras Mandatórias
+
+O módulo de triagem (`src/04_triage/01_classifier.py`) foi projetado para atuar como o primeiro *guardrail* determinístico do pipeline de atendimento. Em vez de delegar a decisão de escalonamento exclusivamente ao modelo generativo, a triagem avalia a entrada do cliente por meio de expressões regulares robustas e regras de negócio explícitas, garantindo 100% de aderência às diretrizes organizacionais.
+
+Os 8 critérios mandatórios definidos na **Política de Suporte e Escalonamento** são mapeados da seguinte forma:
+
+1. **Suspeita de Fraude:** Detecção de padrões associados a roubo de linha, clonagem, uso indevido de conta ou golpes relatados.
+2. **Contestação de Fatura Alto Valor (>= R$ 500,00):** Captura de valores monetários na mensagem do cliente e validação antifraude quando o montante é igual ou superior ao limite estabelecido.
+3. **Contestação de Multa de Fidelidade:** Identificação de disputas sobre multas em fluxos de cancelamento de contrato.
+4. **Alteração de Titularidade (ex.: Falecimento):** Trata processos que exigem documentação física/legal específica.
+5. **Reclamação Externa ou Ação Judicial:** Detecção de menções a órgãos reguladores (Anatel, Procon) ou termos jurídicos.
+6. **Relato de Conduta Abusiva / Assédio:** Identificação de comportamentos inadequados por parte de colaboradores ou terceiros.
+7. **Problema Técnico com Visita Presencial:** Encaminhamento imediato para casos de infraestrutura de rede, instalação de fibra ou reparos que exigem visita física.
+8. **Ausência de Fonte Suficiente na Base (Abstenção):** Quando o retriever do RAG indica um score de confiança abaixo do limiar calibrado (`ABSTENTION_THRESHOLD = 0.30`), acionando o transbordo sem inferência de respostas falsas.
+
+---
+
+### 2. Sumarização Semântica do Caso via LLM
+
+Para evitar que o atendimento humano receba relatos confusos ou muito extensos, foi descartada a abordagem de fatiamento extrativo de texto em favor de uma **sumarização semântica via LLM** (`summarize_case`).
+
+* **Invocação Direta via Bedrock Runtime:** O assistente invoca o **Mistral Large 3** via Amazon Bedrock Runtime para sintetizar o problema principal, produtos citados e valores mencionados em uma frase objetiva de no máximo 200 caracteres.
+* **Uso Integrado do Histórico (`conversation_history`):** O prompt envia o histórico completo das mensagens trocadas anteriormente entre cliente e assistente virtual. Isso garante que o resumo gerado capture todo o contexto da sessão, e não apenas a última frase isolada.
+* **Fallback Seguro:** Em caso de indisponibilidade momentânea ou exceção técnica na chamada do Bedrock, o sistema realiza um *fallback* direto e seguro para o texto do relato original do cliente (respeitando o limite de caracteres `max_len`), garantindo que o pipeline nunca quebre a geração do *payload*.
+
+---
+
+### 3. Estruturação do Payload de Handoff e Conformidade de Contrato
+
+A construção do registro de escalonamento (`src/04_triage/02_handoff.py`) gera uma estrutura JSON padronizada com **10 campos obrigatórios**, assegurando o cumprimento estrito do **Critério de Qualidade do Handoff** (permitir a continuidade do atendimento pelo atendente humano sem que o cliente precise repetir dados).
+
+| Campo | Implementação / Origem dos Dados | Status |
+| --- | --- | --- |
+| `protocolo_atendimento` | Gerado automaticamente no formato `PROT-YYYYMMDDHHMMSS-XXXX`. | ✅ Conformidade total |
+| `data_hora_abertura` | Data e hora exatas da criação do escalonamento em padrão ISO 8601 (UTC). | ✅ Conformidade total |
+| `canal_origem` | Extraído do contexto da sessão (`chat`, `telefone`, `app`, `loja`) via `normalize_canal`. | ✅ Conformidade total |
+| `categoria_motivo` | Chave exata correspondente a um dos 8 critérios mandatórios acionados. | ✅ Conformidade total |
+| `resumo_caso` | Síntese objetiva gerada semanticamente pelo Mistral Large 3 no Amazon Bedrock. | ✅ Conformidade total |
+| `historico_ja_levantado` | Registro textual estruturado contendo todas as interações e confirmações prévias da conversa. | ✅ Conformidade total |
+| `produto_servico_envolvido` | Mapeamento contextual automático do serviço afetado (`telefonia_movel`, `banda_larga_fibra`, etc.). | ✅ Conformidade total |
+| `documento_fonte_consultado` | Documento recuperado do RAG (mesmo quando insuficiente) ou marcação formal de ausência de consulta. | ✅ Conformidade total |
+| `urgencia` | Mapeamento de prioridade de atendimento (`HIGH`, `MEDIUM`, `LOW`) de acordo com a regra ativada. | ✅ Conformidade total |
+| `dados_contato_retorno` | Meio de contato validado do cliente repassado durante a autenticação/sessão. | ✅ Conformidade total |
+
+---
+
+### 4. Política de Segurança IAM (Menor Privilégio)
+
+Embora a validação e execução dos testes da entrega tenham sido realizadas em ambiente de desenvolvimento local, foi desenhada a política de **IAM (Identity and Access Management)** de menor privilégio para ser aplicada à Role de execução da AWS Lambda em uma eventual implantação de produção para o cliente.
+
+Esta política visa limitar estritamente o raio de acesso do assistente na conta AWS do cliente, impedindo a navegação não autorizada em outros recursos e controlando custos operacionais:
+
+* **CloudWatch Logs:** Permite apenas a criação e gravação de logs de auditoria e métricas de execução (`logs:CreateLogGroup`, `logs:CreateLogStream`, `logs:PutLogEvents`).
+* **Amazon S3 (Somente Leitura):** Restringe o acesso do assistente a operações exclusivas de leitura (`s3:GetObject`, `s3:ListBucket`) restritas ao bucket específico de artefatos do RAG (`conectatel-squad1-2026-525530758961-us-east-1-an`).
+* **Amazon Bedrock:** Concede a permissão estritamente necessária para invocação do modelo generativo (`bedrock:InvokeModel`).
+
+#### JSON da Política IAM:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    },
+    {
+      "Sid": "S3ReadOnlyArtifacts",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::conectatel-squad1-2026",
+        "arn:aws:s3:::conectatel-squad1-2026/*"
+      ]
+    },
+    {
+      "Sid": "BedrockInvokeModel",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock:InvokeModel"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+
+```
+
+---
+
 ### Kleidson Matos da Rocha
 
 - **Papel:** Frente 5 (Integração, Auditoria e Qualidade)
