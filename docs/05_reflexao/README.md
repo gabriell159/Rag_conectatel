@@ -1,7 +1,48 @@
 # 5. Reflexão por escrito
 
-Texto coletivo de uma a duas páginas respondendo:
+## O que seria feito se recriassemos o assistente do início?
+- Se fôssemos recriar o projeto do início, investiríamos mais tempo no planejamento inicial, focando na estruturação, modularização, como organizar auditoria e na compreensão profunda de cada componente. Na prática, o desenvolvimento nos mostrou que a divisão prévia de tarefas não seria o suficiente para o desenvolvimento do assistente: muitas decisões técnicas exigiram alinhamento e discussões contínuas, mesmo com as responsabilidades já separadas. Iniciar o projeto com um mapeamento mais claro do fluxo de dados teria otimizado o tempo de codificação.
+- Outro ponto pertinente é referente ao deploy do agente, localmente tudo funcionava de maneira coerente, mas após a tentativa de deploy foram encontradas problemas relacionados a incompatibilidade, permissões e credenciais temporárias. A preparação prévia de um ambiente na AWS demonstra-se essencial para previnir futuros problemas.
+---
+## Gabriel Ferreira Oliveira - Pipeline de dados, tratamento do csv e design a ser seguido
 
-- O que a squad faria diferente se começasse de novo?
-- Qual foi a decisão técnica mais difícil?
-- O que cada membro aprendeu no programa que foi decisivo neste desafio?
+- ### Qual foi a decisão técnica mais difícil?
+    A decisão técnica mais desafiadora na construção do pipeline foi definir a estratégia de tratamento de erros e dados inconsistentes no arquivo CSV. Tivemos que decidir se o sistema deveria ser 'rígido' (tentando resolver todas as inconsistências) ou 'tolerante' (ignorando a linha com erro e processando o resto). Optamos por uma abordagem mais tolerante, como nossa proposta é um sistema MVP (Produto mínimo viável) a presença de alguns dados faltantes/inconsistentes tornou-se aceitável, visto que conseguíamos extrair as informações necessárias para o agente. Essa abordagem garantiu uma consistência nos dados processados, pois a padronização de alguns dados poderia enviesar o assistente com informações falsas, ferindo a integridade da base.
+
+- ### O que aprendi no programa que foi mais decisivo no desafio?
+    O aprendizado mais decisivo foi compreender, na prática, que a eficiência de um agente de IA (especialmente em arquiteturas RAG) é diretamente proporcional à qualidade e à estruturação dos dados que ele consome. Atividades que auxiliam na indexação, como chunking e embedding, são essenciais, mas quando o agente recebe dados limpos e organizados, a busca torna-se muito mais rápida e com scores de relevância maiores. Se não fornecermos as informações de uma maneira clara, bem formatadas e sem ruídos, como feito no pipeline do CSV, o assistente perde precisão e fica suscetível a alucinações. O cuidado no pré-processamento se prova ser um fator de extrema importância para o desempenho final da IA.
+---
+## Pedro Henrique Oliveira Nascimento - Base de conhecimento e RAG
+
+- ### Qual foi a decisão técnica mais difícil?
+    A decisão técnica mais importante foi definir como tratar documentos revogados durante a recuperação. Apenas recuperar os resultados mais similares e remover versões antigas que poderiam fazer com que documentos inválidos ocupassem posições importantes do Top-K. Por isso, optei por aplicar o filtro `status = vigente` antes da similaridade. Essa decisão foi validada utilizando a versão revogada da Política de Reembolso, que continha a regra antiga de 15 dias. Mesmo utilizando uma pergunta muito semelhante ao conteúdo antigo, o documento revogado não participou dos resultados, enquanto a política vigente com prazo de 90 dias foi recuperada corretamente. Outro ponto relevante foi a estratégia de chunking. A primeira execução gerou pequenos chunks contendo praticamente apenas títulos. Após ver os resultados, melhorei o processo para agrupar seções muito pequenas e preservar melhor o contexto semântico dos documentos.
+
+- ### O que aprendi no programa que foi mais decisivo no desafio?
+    Os principais aprendizados foram perceber que um RAG confiável depende de muito mais do que gerar embeddings e realizar uma busca vetorial. A qualidade da resposta começa na preparação dos documentos, passa pela estratégia de chunking e pelos metadados e depende de regras determinísticas para impedir que informações inválidas sejam utilizadas. Também aprofundei conhecimentos práticos de AWS ao integrar Amazon Bedrock e S3 ao pipeline, trabalhando com autenticação via AWS SSO, geração de embeddings e persistência do vector store. A integração entre Titan Text Embeddings V2, FAISS e S3 mostrou como serviços de nuvem e componentes locais podem trabalhar juntos em uma arquitetura de IA.
+---
+## Ana Licia Ferreira Soares - Concierge e Bedrock
+- ### Qual foi a decisão técnica mais difícil?
+    A decisão técnica mais difícil foi definir a fronteira entre responder e retornar NO_ANSWER, já que o score de recuperação não indica probabilidade absoluta de acerto. Utilizando o Golden Set, calibrei o threshold em 0.30 para equilibrar segurança e capacidade de resposta, o que também acomodou um cenário inicial (posteriormente resolvido na integração) de fontes ausentes no Top 3. Para otimizar o sistema, transformei esse limiar em um filtro determinístico: abaixo de 0.30, o LLM não é acionado, reduzindo custos e latência; acima disso, o Mistral recebe o contexto, mantendo a autonomia para retornar NO_ANSWER caso as evidências sejam insuficientes. Essa dupla validação minimizou drasticamente o risco de alucinações
+- ### O que aprendi no programa que foi mais decisivo no desafio?
+    O aprendizado mais importante foi compreender que uma aplicação com IA generativa confiável não deve delegar todas as decisões ao modelo. Conceitos estudados no programa sobre RAG, grounding, embeddings, avaliação de modelos e Amazon Bedrock foram decisivos para separar responsabilidades entre recuperação, decisão e geração.
+
+    Aprofundei conceitos com Boto3 e Bedrock Runtime, além da importância de combinar testes automatizados com mocks e validações reais na AWS. O desafio mostrou, na prática, que qualidade em IA não depende apenas de escolher um bom LLM, mas de criar controles determinísticos, critérios de evidência e mecanismos claros para reconhecer quando o sistema não deve responder.
+
+
+---
+## Vinícius Nunes de Andrade - Triagem, Escalonamento e Handoff
+- ### Qual foi a decisão técnica mais difícil?
+    A decisão técnica mais desafiadora esteve centrada no desenho do contrato do handoff e na organização final da integração do meu módulo com as demais frentes do sistema. Definir como a camada de triagem receberia o contexto processado pelas etapas anteriores e como devolveria um payload estruturado sem criar dependências rígidas exigiu um planejamento cuidadoso de arquitetura.
+
+    O principal obstáculo foi harmonizar as informações brutas do usuário com as variáveis do histórico da conversa e os metadados do RAG, garantindo que o relatório final contivesse os campos obrigatórios para o atendimento humano sem quebrar a execução caso algum dado estivesse ausente. Ajustar esses pontos de contato entre os módulos exigiu a simplificação de interfaces de função e o alinhamento constante com o pipeline principal, assegurando que o escalonamento fosse disparado de forma determinística e confiável.
+
+- ### O que aprendi no programa que foi mais decisivo no desafio?
+    O aprendizado mais decisivo obtido ao longo do programa esteve relacionado ao uso de técnicas de organização de projetos em equipe. A aplicação de práticas de modularização e separação clara de responsabilidades permitiu estruturar o desafio de forma compartimentalizada, viabilizando o desenvolvimento de certas atividades em paralelo a outras frentes.
+
+    Na prática, apliquei essa visão para separar a lógica de triagem e a política de IAM do restante do código. Definir entradas e saídas bem claras para o meu módulo permitiu trabalhar de forma isolada, testar cada parte com segurança e integrar tudo ao pipeline final sem muitas complicações.
+---
+## Kleidson Matos da Rocha - Integração, Auditoria e Qualidade
+- ### Qual foi a decisão técnica mais difícil?
+    A decisão técnica mais desafiadora foi equilibrar demonstrabilidade, segurança operacional e simplicidade. Para evitar uma infraestrutura excessivamente complexa (com bancos de dados e filas), adotamos uma arquitetura serverless enxuta: Amplify (interface), API Gateway e Lambda empacotada em Docker (devido ao FAISS), S3 (vector store e auditoria) e Bedrock (LLMs). Dois trade-offs principais guiaram a solução: primeiro, a criação de um "interruptor" com cache no Parameter Store para ligar/desligar a demonstração e controlar custos; segundo, a decisão de salvar logs de auditoria como arquivos JSON simples no S3, protegidos via Cognito. Para garantir a confiabilidade dessa trilha, implementamos uma validação de contrato antes da persistência, exigindo, por exemplo, que o status ANSWER contenha citações vigentes.
+- ### O que aprendi no programa que foi mais decisivo no desafio?
+    O principal aprendizado foi estruturar a IA generativa como um sistema de produto integrado, e não apenas como uma chamada isolada ao modelo. Isso garantiu a confiabilidade do RAG através de critérios de evidência, fontes verificáveis e separação clara entre recuperação, decisão, resposta e triagem. Paralelamente, priorizei a observabilidade e a governança: o uso do trace_id e a criação de uma console administrativa permitiram rastrear e auditar o contexto completo de cada interação. Além disso, transformei restrições em decisões de arquitetura, controlando custos na AWS com um interruptor operacional, protegendo acessos via Cognito e garantindo a reprodutibilidade do ambiente com Docker, SAM e comandos centralizados (run.py). Como resultado, minha maior contribuição na Frente 05 foi entregar uma experiência de ponta a ponta que não apenas responde, mas registra, explica e audita todo o ciclo de vida da informação
