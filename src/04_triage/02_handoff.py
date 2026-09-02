@@ -133,9 +133,10 @@ def build_escalation_payload(
     resumo = summarize_case(question, conversation_history=conversation_history)
     historico = build_historico_ja_levantado(question, conversation_history)
 
+    # A triagem é determinística, mas suas regras são fundamentadas na
+    # política oficial de suporte e escalonamento do corpus.
     documento_fonte = source_document or (
-        "Nenhum documento da base de conhecimento foi consultado antes "
-        "deste escalonamento."
+        "corpus/politicas/politica_suporte_escalonamento.md"
     )
 
     dados_contato = contact_data or (
@@ -143,6 +144,9 @@ def build_escalation_payload(
     )
 
     payload = {
+        # Mantém a regra determinística que justificou o encaminhamento.
+        # Esse identificador é necessário para auditoria, qualidade e handoff.
+        "rule_id": rule_info.get("rule_id", "escalonamento_humano"),
         "protocolo_atendimento": protocolo,
         "data_hora_abertura": now_iso,
         "canal_origem": normalize_canal(canal_origem),
