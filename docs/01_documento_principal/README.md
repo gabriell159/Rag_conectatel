@@ -268,7 +268,22 @@ Para evitar que o atendimento humano receba relatos confusos ou muito extensos, 
 
 ---
 
-### 3. Estruturação do Payload de Handoff e Conformidade de Contrato
+### 3. Classificação de Risco e Níveis de Prioridade no Handoff
+A triagem determinística do sistema segmenta os atendimentos de acordo com o impacto financeiro, regulatório e operacional de cada solicitação. Essa classificação determina a ação imediata do orquestrador (`ANSWER` via RAG ou `ESCALATE` via Handoff) e preenche o campo `urgency_level` no payload de transbordo.
+
+| Nível de Risco | Motivo (`reason_code`) | Descrição do Cenário | Condição de Disparo |
+| :--- | :--- | :--- | :--- |
+| **Alto (`HIGH`)** | `FRAUD_SUSPECT` | Suspeita de fraude, clonagem de chip/eSIM, golpe ou invasão | Declaração direta de incidente de segurança |
+| **Alto (`HIGH`)** | `TECHNICAL_ISSUE` | Falha crítica de conectividade ou indisponibilidade de serviço | Relato de ausência prolongada de sinal ou rede |
+| **Alto (`HIGH`)** | `REGULATORY_COMPLAINT` | Menção explícita a órgãos de defesa do consumidor | Citação de Anatel, Procon ou instâncias judiciais |
+| **Médio (`MEDIUM`)** | `HIGH_VALUE_DISPUTE` | Contestação ou divergência em fatura de alto valor | Valores contestados iguais ou superiores a R$ 500,00 |
+| **Médio (`MEDIUM`)** | `DECEASED_HOLDER` | Transferência de titularidade ou cancelamento por óbito | Procedimentos burocráticos sensíveis e isenção de multa |
+| **Médio (`MEDIUM`)** | `CANCELLATION_REQUEST` | Solicitação direta de encerramento de contrato | Risco iminente de *churn* exigindo validação de fidelidade |
+| **Baixo (`LOW`)** | `INFORMATIONAL_QUERY` | Consultas conceituais sobre regras, prazos ou coberturas | Dúvidas teóricas respondidas via base de conhecimento (RAG) |
+
+--- 
+
+### 4. Estruturação do Payload de Handoff e Conformidade de Contrato
 
 A construção do registro de escalonamento (`src/04_triage/02_handoff.py`) gera uma estrutura JSON padronizada com **10 campos obrigatórios**, assegurando o cumprimento estrito do **Critério de Qualidade do Handoff** (permitir a continuidade do atendimento pelo atendente humano sem que o cliente precise repetir dados).
 
@@ -287,7 +302,7 @@ A construção do registro de escalonamento (`src/04_triage/02_handoff.py`) gera
 
 ---
 
-### 4. Política de Segurança IAM (Menor Privilégio)
+### 5. Política de Segurança IAM (Menor Privilégio)
 
 Embora a validação e execução dos testes da entrega tenham sido realizadas em ambiente de desenvolvimento local, foi desenhada a política de **IAM (Identity and Access Management)** de menor privilégio para ser aplicada à Role de execução da AWS Lambda em uma eventual implantação de produção para o cliente.
 
